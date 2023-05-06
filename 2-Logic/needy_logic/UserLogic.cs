@@ -29,7 +29,7 @@ namespace needy_logic
             return await _userRepository.GetUsersAsync();
         }
 
-        public async Task<User> GetUserByCIAsync(int userCI)
+        public async Task<User> GetUserByCIAsync(string userCI)
         {
             return await _userRepository.GetUserByCIAsync(userCI);
         }

@@ -12,7 +12,7 @@ namespace needy_dataAccess.Interfaces
     {
         Task<IEnumerable<User>> GetUsersAsync();
 
-        Task<User> GetUserByCIAsync(int userCI);
+        Task<User> GetUserByCIAsync(string userCI);
 
         Task<bool> InsertUserAsync(InsertUserParameters parameters);
     }

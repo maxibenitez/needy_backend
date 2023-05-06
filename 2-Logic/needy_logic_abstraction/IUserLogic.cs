@@ -12,7 +12,7 @@ namespace needy_logic_abstraction
     {
         Task<IEnumerable<User>> GetUsersAsync();
 
-        Task<User> GetUserByCIAsync(int userCI);
+        Task<User> GetUserByCIAsync(string userCI);
 
         Task<bool> InsertUserAsync(InsertUserParameters parameters);
     }

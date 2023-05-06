@@ -32,7 +32,7 @@ namespace needy_api.Controllers
         }
 
         [HttpGet("get-user-by-ci")]
-        public async Task<IActionResult> GetUserByCIAsync(int userCI)
+        public async Task<IActionResult> GetUserByCIAsync([FromBody] string userCI)
         {
             return Ok(await _userLogic.GetUserByCIAsync(userCI));
         }

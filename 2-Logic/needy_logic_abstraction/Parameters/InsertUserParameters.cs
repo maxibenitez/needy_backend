@@ -8,7 +8,7 @@ namespace needy_logic_abstraction.Parameters
 {
     public class InsertUserParameters
     {
-        public int CI { get; set; }
+        public string CI { get; set; }
 
         public string FirstName { get; set; }
 

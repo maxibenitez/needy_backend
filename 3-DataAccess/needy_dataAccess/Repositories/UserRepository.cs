@@ -29,19 +29,19 @@ namespace needy_dataAccess.Repositories
             using var connection = _dbConnection.CreateConnection();
 
             var query = @"
-                            SELECT ""CI"", ""FirstName"", ""LastName"", ""Address"", ""City"", ""Zone"",
+                            SELECT ""CI"", ""FirstName"", ""LastName"", ""Address"", ""Zone"",
                                    ""Phone"", ""Gender"", ""BirthDate"", ""Email"", ""Password""
                             FROM public.""Users""";
 
             return await connection.QueryAsync<User>(query, new {});
         }
 
-        public async Task<User> GetUserByCIAsync(int userCI)
+        public async Task<User> GetUserByCIAsync(string userCI)
         {
             using var connection = _dbConnection.CreateConnection();
 
             var query = @"
-                            SELECT ""CI"", ""FirstName"", ""LastName"", ""Address"", ""City"", ""Zone"",
+                            SELECT ""CI"", ""FirstName"", ""LastName"", ""Address"", ""Zone"",
                                    ""Phone"", ""Gender"", ""BirthDate"", ""Email"", ""Password""
                             FROM public.""Users""
                             WHERE ""CI"" = @CI";
@@ -54,9 +54,9 @@ namespace needy_dataAccess.Repositories
             using var connection = _dbConnection.CreateConnection();
 
             var query = @"
-                            INSERT INTO public.""Users"" (""CI"", ""FirstName"", ""LastName"", ""Address"", ""City"", ""Zone"",
+                            INSERT INTO public.""Users"" (""CI"", ""FirstName"", ""LastName"", ""Address"", ""Zone"",
                                                         ""Phone"", ""Gender"", ""BirthDate"", ""Email"", ""Password"")
-                            VALUES (@CI, @FirstName, @LastName, @Address, @City, @Zone, @Phone, @Gender, @BirthDate, @Email, @Password)";
+                            VALUES (@CI, @FirstName, @LastName, @Address, @Zone, @Phone, @Gender, @BirthDate, @Email, @Password)";
 
             var result = await connection.ExecuteAsync(query, new
             {
