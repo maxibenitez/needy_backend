@@ -39,6 +39,11 @@ namespace needy_logic
             return await _userRepository.InsertUserAsync(parameters);
         }
 
+        public Task<bool> InsertUserSkillAsync(int skilId)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }

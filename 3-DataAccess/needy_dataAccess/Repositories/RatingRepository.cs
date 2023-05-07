@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using needy_dataAccess.Interfaces;
+using needy_dto;
 using needy_logic_abstraction.Parameters;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace needy_dataAccess.Repositories
 {
-    public class RaitingRepository : IRaitingRepository
+    public class RatingRepository : IRatingRepository
     {
         #region Properties and Fields
 
@@ -19,28 +20,33 @@ namespace needy_dataAccess.Repositories
 
         #region Builders
 
-        public RaitingRepository(PostgreSQLConnection dbConnection)
+        public RatingRepository(PostgreSQLConnection dbConnection)
         {
             _dbConnection = dbConnection;
         }
 
         #endregion
 
-        #region Implments IRaitingRepository
+        #region Implments IRatingRepository
 
-        public async Task<bool> InsertRaitingAsync(InsertRaitingParameters parameters)
+        public Task<Rating> GetRatingByUserCiAsync(string userCi)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> InsertRatingAsync(InsertRatingParameters parameters)
         {
             using var connection = _dbConnection.CreateConnection();
 
             var query = @"
-                            INSERT INTO public.""Raiting"" (""CiRequestor"", ""CiHelper"", ""Raiting"", ""Comment"")
-                            VALUES (@CiRequestor, @CiHelper, @Raiting, @Comment)";
+                            INSERT INTO public.""Rating"" (""CiRequestor"", ""CiHelper"", ""Rating"", ""Comment"")
+                            VALUES (@CiRequestor, @CiHelper, @Rating, @Comment)";
 
             var result = await connection.ExecuteAsync(query, new
             {
                 parameters.CiRequestor,
                 parameters.CiHelper,
-                parameters.Raiting,
+                parameters.Rating,
                 parameters.Comment
             });
 

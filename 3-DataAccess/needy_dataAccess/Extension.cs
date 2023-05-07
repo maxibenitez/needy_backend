@@ -13,7 +13,8 @@ namespace needy_dataAccess
             .AddSingleton<PostgreSQLConnection>()
             .AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IAuthorizationRepository, AuthorizationRepository>()
-            .AddScoped<IRaitingRepository, RaitingRepository>();
+            .AddScoped<INeedRepository, NeedRepository>()
+            .AddScoped<IRatingRepository, RatingRepository>();
         }
     }
 }

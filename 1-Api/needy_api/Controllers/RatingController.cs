@@ -5,35 +5,35 @@ using needy_logic_abstraction.Parameters;
 
 namespace needy_api.Controllers
 {
-    [Route("api/raitings")]
-    public class RaitingController : Controller
+    [Route("api/ratings")]
+    public class RatingController : Controller
     {
         #region Properties and Fields
 
-        private readonly IRaitingLogic _raitingLogic;
+        private readonly IRatingLogic _ratingLogic;
             
         #endregion
 
         #region Builders
 
-        public RaitingController(IRaitingLogic raitingLogic)
+        public RatingController(IRatingLogic ratingLogic)
         {
-            _raitingLogic = raitingLogic;
+            _ratingLogic = ratingLogic;
         }
 
         #endregion
 
         #region Implements
 
-        [HttpPost("insert-raiting")]
-        public async Task<IActionResult> InsertRaitingAsync([FromBody] InsertRaitingParameters parameters)
+        [HttpPost("insert-rating")]
+        public async Task<IActionResult> InsertRatingAsync([FromBody] InsertRatingParameters parameters)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var result = await _raitingLogic.InsertRaitingAsync(parameters);
+            var result = await _ratingLogic.InsertRatingAsync(parameters);
 
             return result ? Ok(result) : BadRequest();
         }

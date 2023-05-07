@@ -16,4 +16,8 @@
     <ProjectReference Include="..\..\2-Logic\needy_logic_dependency_injection\needy_logic_dependency_injection.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Middlewares\" />
+  </ItemGroup>
+
 </Project>

@@ -50,6 +50,19 @@ namespace needy_api.Controllers
             return result ? Ok(result) : BadRequest();
         }
 
+        [HttpPost("insert-user-skill")]
+        public async Task<IActionResult> InsertUserSkillAsync([FromBody] int skillId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var result = await _userLogic.InsertUserSkillAsync(skillId);
+
+            return result ? Ok(result) : BadRequest();
+        }
+
         #endregion
     }
 }

@@ -75,6 +75,11 @@ namespace needy_dataAccess.Repositories
             return result > 0;
         }
 
+        public Task<bool> InsertUserSkillAsync(int skilId)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }
