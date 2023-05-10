@@ -27,19 +27,19 @@ namespace needy_logic
 
         #region Implements IRatingLogic
 
-        public async Task<Rating> GetRatingByUserCiAsync(string userCi)
+        public async Task<decimal> GetRatingByUserCiAsync(string userCi)
         {
-            /*
+            
             IEnumerable<Rating> ratingsEnum = await _ratingRepository.GetRatingByUserCiAsync(userCi);
             List<Rating> ratings = ratingsEnum.ToList();
             decimal ratingAux = 0;
             foreach (Rating rating in ratingsEnum)
             {
-                ratingAux += rating.Average;
+                ratingAux += rating.RatingValue;
             }
             decimal avg = ratingAux / ratings.Count();
             return avg;
-            */
+            
             throw new NotImplementedException();
         }
 

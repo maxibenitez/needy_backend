@@ -4,9 +4,11 @@
     {
         public int Id { get; set; }
 
-        public User User { get; set; }
+        public int CiRquestor { get; set; }
 
-        public decimal Average { get; set; }
+        public int CiHelper { get; set; }
+
+        public decimal RatingValue { get; set; }
 
         public string Comment { get; set; }
     }

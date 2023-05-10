@@ -5,7 +5,7 @@ namespace needy_logic_abstraction
 {
     public interface IRatingLogic
     {
-        Task<Rating> GetRatingByUserCiAsync(string userCi);
+        Task<decimal> GetRatingByUserCiAsync(string userCi);
 
         Task<bool> InsertRatingAsync(InsertRatingParameters parameters);
     }

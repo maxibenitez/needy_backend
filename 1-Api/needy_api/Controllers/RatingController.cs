@@ -24,6 +24,11 @@ namespace needy_api.Controllers
         #endregion
 
         #region Implements
+        [HttpGet("get-rating-by-ci")]
+        public async Task<IActionResult> GetRatingById([FromBody] string userCi)
+        {
+            return Ok(await _ratingLogic.GetRatingByUserCiAsync(userCi));
+        }
 
         [HttpPost("insert-rating")]
         public async Task<IActionResult> InsertRatingAsync([FromBody] InsertRatingParameters parameters)

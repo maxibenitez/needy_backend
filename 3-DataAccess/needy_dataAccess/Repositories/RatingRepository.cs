@@ -33,7 +33,7 @@ namespace needy_dataAccess.Repositories
         {
             using var connection = _dbConnection.CreateConnection();
 
-            var query = @"SELECT ""CiRquestor"", ""CiHelper"", ""Rating"", ""Comment"" 
+            var query = @"SELECT ""CiRquestor"", ""CiHelper"", ""RatingValue"", ""Comment"" 
                         FROM public.""Rating""
                         WHERE ""CiHelper"" = @CiHelper";
             return await connection.QueryAsync<Rating>(query, new { CiHelper = userCi});
@@ -44,7 +44,7 @@ namespace needy_dataAccess.Repositories
             using var connection = _dbConnection.CreateConnection();
 
             var query = @"
-                            INSERT INTO public.""Rating"" (""CiRequestor"", ""CiHelper"", ""Rating"", ""Comment"")
+                            INSERT INTO public.""Rating"" (""CiRequestor"", ""CiHelper"", ""RatingValue"", ""Comment"")
                             VALUES (@CiRequestor, @CiHelper, @Rating, @Comment)";
 
             var result = await connection.ExecuteAsync(query, new
