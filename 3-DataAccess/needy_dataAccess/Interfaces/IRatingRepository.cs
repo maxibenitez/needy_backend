@@ -5,7 +5,7 @@ namespace needy_dataAccess.Interfaces
 {
     public interface IRatingRepository
     {
-        Task<Rating> GetRatingByUserCiAsync(string userCi);
+        Task<IEnumerable<Rating>> GetRatingByUserCiAsync(string userCi);
 
         Task<bool> InsertRatingAsync(InsertRatingParameters parameters);
     }

@@ -29,9 +29,14 @@ namespace needy_dataAccess.Repositories
 
         #region Implments IRatingRepository
 
-        public Task<Rating> GetRatingByUserCiAsync(string userCi)
+        public async Task<IEnumerable<Rating>> GetRatingByUserCiAsync(string userCi)
         {
-            throw new NotImplementedException();
+            using var connection = _dbConnection.CreateConnection();
+
+            var query = @"SELECT ""CiRquestor"", ""CiHelper"", ""Rating"", ""Comment"" 
+                        FROM public.""Rating""
+                        WHERE ""CiHelper"" = @CiHelper";
+            return await connection.QueryAsync<Rating>(query, new { CiHelper = userCi});
         }
 
         public async Task<bool> InsertRatingAsync(InsertRatingParameters parameters)

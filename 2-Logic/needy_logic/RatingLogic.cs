@@ -2,6 +2,7 @@
 using needy_dto;
 using needy_logic_abstraction;
 using needy_logic_abstraction.Parameters;
+using System.Collections.Generic;
 
 namespace needy_logic
 {
@@ -26,14 +27,31 @@ namespace needy_logic
 
         #region Implements IRatingLogic
 
-        public Task<Rating> GetRatingByUserCiAsync(string userCi)
+        public async Task<Rating> GetRatingByUserCiAsync(string userCi)
         {
+            /*
+            IEnumerable<Rating> ratingsEnum = await _ratingRepository.GetRatingByUserCiAsync(userCi);
+            List<Rating> ratings = ratingsEnum.ToList();
+            decimal ratingAux = 0;
+            foreach (Rating rating in ratingsEnum)
+            {
+                ratingAux += rating.Average;
+            }
+            decimal avg = ratingAux / ratings.Count();
+            return avg;
+            */
             throw new NotImplementedException();
         }
 
         public async Task<bool> InsertRatingAsync(InsertRatingParameters parameters)
         {
             //Controlar el user
+            User requestor = await _userRepository.GetUserByCIAsync(parameters.CiRequestor);
+            User helper = await _userRepository.GetUserByCIAsync(parameters.CiHelper);
+            if(requestor == null || helper == null) {
+                //Capaz podria tirar excepción acá
+                return false;
+            }
             return await _ratingRepository.InsertRatingAsync(parameters);
         }
 
