@@ -14,7 +14,8 @@ namespace needy_dataAccess
             .AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IAuthorizationRepository, AuthorizationRepository>()
             .AddScoped<INeedRepository, NeedRepository>()
-            .AddScoped<IRatingRepository, RatingRepository>();
+            .AddScoped<IRatingRepository, RatingRepository>()
+            .AddScoped<ISkillRepository, SkillRepository>();
         }
     }
 }
