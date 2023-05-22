@@ -13,6 +13,6 @@ namespace needy_logic_abstraction.Parameters
 
         public DateTime NeedDate { get; set; }
 
-        public Skill RequestedSkill { get; set; }
+        public int RequestedSkillId { get; set; }
     }
 }

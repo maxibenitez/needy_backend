@@ -96,24 +96,47 @@ namespace needy_logic
             return await _needRepository.DeleteNeedAsync(needId);
         }
 
-        public async Task<bool> ApplyNeedAsync(int needId, string applierCi)
+        public async Task<bool> ApplyNeedAsync(int needId, string applierCI)
         {
-            return await _needRepository.ApplyNeedAsync(needId, applierCi);
+            string[] appliersCI = await _needRepository.GetNeedAppliersListAsync(needId);
+
+            List<string> updatedAppliersCI = appliersCI?.ToList() ?? new List<string>();
+
+            if (!updatedAppliersCI.Contains(applierCI))
+            {
+                updatedAppliersCI.Add(applierCI);
+            }
+
+            return await _needRepository.UpdateAppliersListAsync(needId, updatedAppliersCI.ToArray());
         }
 
-        public async Task<bool> UnapplyNeedAsync(int needId, string applierCi)
+        public async Task<bool> UnapplyNeedAsync(int needId, string applierCI)
         {
-            return await _needRepository.UnapplyNeedAsync(needId, applierCi);
+            string[] appliersCI = await _needRepository.GetNeedAppliersListAsync(needId);
+
+            List<string> updatedAppliersCI = appliersCI?.ToList() ?? new List<string>();
+            updatedAppliersCI.Remove(applierCI);
+
+            return await _needRepository.UpdateAppliersListAsync(needId, updatedAppliersCI.ToArray());
         }
 
-        public async Task<bool> AcceptApplierAsync(int needId, string applierCi)
+        public async Task<bool> AcceptApplierAsync(int needId, string applierCI)
         {
-            return await _needRepository.AcceptApplierAsync(needId, applierCi);
+            var result = await _needRepository.AcceptApplierAsync(needId, applierCI);
+
+            ChangeStatusAsync(needId, "Aceptada");
+
+            return result;
         }
 
-        public async Task<bool> DeclineApplierAsync(int needId, string applierCi)
+        public async Task<bool> DeclineApplierAsync(int needId, string applierCI)
         {
-            return await _needRepository.DeclineApplierAsync(needId, applierCi);
+            string[] appliersCI = await _needRepository.GetNeedAppliersListAsync(needId);
+
+            List<string> updatedAppliersCI = appliersCI?.ToList() ?? new List<string>();
+            updatedAppliersCI.Remove(applierCI);
+
+            return await _needRepository.UpdateAppliersListAsync(needId, updatedAppliersCI.ToArray());
         }
 
         #endregion
