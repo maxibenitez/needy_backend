@@ -2,6 +2,9 @@
 using needy_dto;
 using needy_logic_abstraction;
 using needy_logic_abstraction.Parameters;
+using Npgsql;
+using System.Data;
+using System.Reflection.PortableExecutable;
 
 namespace needy_logic
 {
@@ -10,68 +13,125 @@ namespace needy_logic
         #region Properties and Fields
 
         private readonly INeedRepository _needRepository;
+        private readonly IUserRepository _userRepository;
+        //private readonly ISkillRepository _skillRepository;
 
         #endregion
 
         #region Builders
 
-        public NeedLogic(INeedRepository needRepository)
+        public NeedLogic(INeedRepository needRepository, IUserRepository userRepository)//, ISkillRepository skillRepository)
         {
             _needRepository = needRepository;
+            _userRepository = userRepository;
+            //_skillRepository = skillRepository;
         }
 
         #endregion
 
         #region Implements INeedLogic
 
-        public Task<IEnumerable<Need>> GetNeedsAsync()
+        public async Task<IEnumerable<Need>> GetNeedsAsync()
         {
-            throw new NotImplementedException();
+            //return await _needRepository.GetNeedsAsync();
+            return null;
         }
 
-        public Task<IEnumerable<Need>> GetNeedsBySkillAsync(string skill)
+        public async Task<IEnumerable<Need>> GetNeedsBySkillAsync(int skillId)
         {
-            throw new NotImplementedException();
+            //return await _needRepository.GetNeedsBySkillAsync(skillId);
+            return null;
         }
 
-        public Task<Need> GetNeedByIdAsync(int needId)
+        public async Task<Need> GetNeedByIdAsync(int needId)
         {
-            throw new NotImplementedException();
+            NeedData data = await _needRepository.GetNeedByIdAsync(needId);
+
+            if (data != null)
+            {
+                var need = new Need
+                {
+                    Id = data.Id,
+                    Status = data.Status,
+                    Description = data.Description,
+                    CreationDate = data.CreationDate,
+                    NeedDate = data.NeedDate,
+                    AcceptedDate = data.AcceptedDate,
+                };
+
+                //need.RequestedSkill = await _skillRepository.GetSkillById(data.RequestedSkillId);
+                need.Requestor = await _userRepository.GetUserByCIAsync(data.RequestorCI);
+
+                if (data.AppliersCI != null)
+                {
+                    need.Appliers = await GetNeedAppliersAsync(data.AppliersCI);
+                }
+
+                if (data.AcceptedApplierCI != null)
+                {
+                    need.AcceptedApplier = await _userRepository.GetUserByCIAsync(data.AcceptedApplierCI);
+                }
+
+                return need;
+            }
+
+            return null;  
         }
 
-        public Task<bool> InsertNeedAsync(InsertNeedParameters parameters)
+        public async Task<bool> InsertNeedAsync(InsertNeedParameters parameters)
         {
-            throw new NotImplementedException();
+            return await _needRepository.InsertNeedAsync(parameters);
         }
 
-        public Task<bool> UpdateNeedAsync(int needId)
+        public async Task<bool> UpdateNeedAsync(int needId, UpdateNeedParameters parameters)
         {
-            throw new NotImplementedException();
+            return await _needRepository.UpdateNeedAsync(needId, parameters);
         }
 
-        public Task<bool> DeleteNeedAsync(int needId)
+        public async Task<bool> DeleteNeedAsync(int needId)
         {
-            throw new NotImplementedException();
+            return await _needRepository.DeleteNeedAsync(needId);
         }
 
-        public Task<bool> ApplyNeedAsync(int needId, int applierId)
+        public async Task<bool> ApplyNeedAsync(int needId, string applierCi)
         {
-            throw new NotImplementedException();
+            return await _needRepository.ApplyNeedAsync(needId, applierCi);
         }
 
-        public Task<bool> UnapplyNeedAsync(int needId, int applierId)
+        public async Task<bool> UnapplyNeedAsync(int needId, string applierCi)
         {
-            throw new NotImplementedException();
+            return await _needRepository.UnapplyNeedAsync(needId, applierCi);
         }
 
-        public Task<bool> AcceptApplierAsync(int applierId)
+        public async Task<bool> AcceptApplierAsync(int needId, string applierCi)
         {
-            throw new NotImplementedException();
+            return await _needRepository.AcceptApplierAsync(needId, applierCi);
         }
 
-        public Task<bool> DeclineApplierAsync(int applierId)
+        public async Task<bool> DeclineApplierAsync(int needId, string applierCi)
         {
-            throw new NotImplementedException();
+            return await _needRepository.DeclineApplierAsync(needId, applierCi);
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private async Task<bool> ChangeStatusAsync(int needId, string status)
+        {
+            return await _needRepository.ChangeStatusAsync(needId, status);
+        }
+
+        private async Task<IEnumerable<User>> GetNeedAppliersAsync(IEnumerable<string> appliersCI)
+        {
+            List<User> appliers = new List<User>();
+
+            foreach (string applierCI in appliersCI)
+            {
+                appliers.Add(await _userRepository.GetUserByCIAsync(applierCI));
+            }
+
+            return appliers;
         }
 
         #endregion

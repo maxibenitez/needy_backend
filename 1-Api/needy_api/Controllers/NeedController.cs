@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using needy_logic_abstraction.Parameters;
 using needy_logic_abstraction;
+using needy_dto;
 
 namespace needy_api.Controllers
 {
@@ -24,10 +25,74 @@ namespace needy_api.Controllers
 
         #region Implements
 
-        [HttpPost("get-needs")]
+        [HttpGet("get-needs")]
         public async Task<IActionResult> GetNeedsAsync()
         {
-            return Ok();
+            return Ok(await _needLogic.GetNeedsAsync());
+        }
+
+        [HttpGet("get-needs-by-skill/{skillId}")]
+        public async Task<IActionResult> GetNeedsBySkillAsync(int skillId)
+        {
+            return Ok(await _needLogic.GetNeedsBySkillAsync(skillId));
+        }
+
+        [HttpGet("get-need-by-id/{needId}")]
+        public async Task<IActionResult> GetNeedByIdAsync(int needId)
+        {
+            return Ok(await _needLogic.GetNeedByIdAsync(needId));
+        }
+
+        [HttpPost("insert-need")]
+        public async Task<IActionResult> InsertNeedAsync([FromBody] InsertNeedParameters parameters)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            return await _needLogic.InsertNeedAsync(parameters) ? Ok() : BadRequest();
+        }
+
+        [HttpPut("update-need/{needId}")]
+        public async Task<IActionResult> UpdateNeedAsync(int needId, [FromBody] UpdateNeedParameters parameters)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            return await _needLogic.UpdateNeedAsync(needId, parameters) ? Ok() : BadRequest();
+        }
+
+        [HttpDelete("delete-need/{needId}")]
+        public async Task<IActionResult> DeleteNeedAsync(int needId)
+        {
+            return await _needLogic.DeleteNeedAsync(needId) ? Ok() : BadRequest();
+        }
+
+        [HttpPut("apply-need/{needId}")]
+        public async Task<IActionResult> ApplyNeedAsync(int needId, [FromBody] string applierCi)
+        {
+            return await _needLogic.ApplyNeedAsync(needId, applierCi) ? Ok() : BadRequest();
+        }
+
+        [HttpPut("unapply-need/{needId}")]
+        public async Task<IActionResult> UnapplyNeedAsync(int needId, [FromBody] string applierCi)
+        {
+            return await _needLogic.UnapplyNeedAsync(needId, applierCi) ? Ok() : BadRequest();
+        }
+
+        [HttpPut("accept-applier")]
+        public async Task<IActionResult> AcceptApplierAsync([FromBody] int needId, [FromBody] string applierCi)
+        {
+            return await _needLogic.AcceptApplierAsync(needId, applierCi) ? Ok() : BadRequest();
+        }
+
+        [HttpDelete("decline-applier")]
+        public async Task<IActionResult> DeclineApplierAsync([FromBody] int needId, [FromBody] string applierCi)
+        {
+            return await _needLogic.DeclineApplierAsync(needId, applierCi) ? Ok() : BadRequest();
         }
 
         #endregion

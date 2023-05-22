@@ -7,22 +7,22 @@ namespace needy_logic_abstraction
     {
         Task<IEnumerable<Need>> GetNeedsAsync();
 
-        Task<IEnumerable<Need>> GetNeedsBySkillAsync(string skill);
+        Task<IEnumerable<Need>> GetNeedsBySkillAsync(int skillId);
 
         Task<Need> GetNeedByIdAsync(int needId);
 
         Task<bool> InsertNeedAsync(InsertNeedParameters parameters);
-
-        Task<bool> ApplyNeedAsync(int needId, int applierId);
-
-        Task<bool> UnapplyNeedAsync(int needId, int applierId);
-
-        Task<bool> UpdateNeedAsync(int needId);
-
+        
+        Task<bool> UpdateNeedAsync(int needId, UpdateNeedParameters parameters);
+        
         Task<bool> DeleteNeedAsync(int needId);
 
-        Task<bool> AcceptApplierAsync(int applierId);
+        Task<bool> ApplyNeedAsync(int needId, string applierCi);
 
-        Task<bool> DeclineApplierAsync(int applierId);
+        Task<bool> UnapplyNeedAsync(int needId, string applierCi);
+
+        Task<bool> AcceptApplierAsync(int needId, string applierCi);
+
+        Task<bool> DeclineApplierAsync(int needId, string applierCi);
     }
 }

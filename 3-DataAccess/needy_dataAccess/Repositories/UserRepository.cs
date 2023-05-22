@@ -31,7 +31,7 @@ namespace needy_dataAccess.Repositories
             var query = @"
                             SELECT ""CI"", ""FirstName"", ""LastName"", ""Address"", ""Zone"",
                                    ""Phone"", ""Gender"", ""BirthDate"", ""Email"", ""Password""
-                            FROM public.""Users""";
+                            FROM public.""User""";
 
             return await connection.QueryAsync<User>(query, new {});
         }
@@ -43,7 +43,7 @@ namespace needy_dataAccess.Repositories
             var query = @"
                             SELECT ""CI"", ""FirstName"", ""LastName"", ""Address"", ""Zone"",
                                    ""Phone"", ""Gender"", ""BirthDate"", ""Email"", ""Password""
-                            FROM public.""Users""
+                            FROM public.""User""
                             WHERE ""CI"" = @CI";
 
             return await connection.QueryFirstOrDefaultAsync<User>(query, new { CI = userCI });
@@ -54,7 +54,7 @@ namespace needy_dataAccess.Repositories
             using var connection = _dbConnection.CreateConnection();
 
             var query = @"
-                            INSERT INTO public.""Users"" (""CI"", ""FirstName"", ""LastName"", ""Address"", ""Zone"",
+                            INSERT INTO public.""User"" (""CI"", ""FirstName"", ""LastName"", ""Address"", ""Zone"",
                                                         ""Phone"", ""Gender"", ""BirthDate"", ""Email"", ""Password"")
                             VALUES (@CI, @FirstName, @LastName, @Address, @Zone, @Phone, @Gender, @BirthDate, @Email, @Password)";
 

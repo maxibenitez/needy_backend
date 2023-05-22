@@ -60,7 +60,7 @@ namespace needy_api.Controllers
 
             var result = await _userLogic.InsertUserSkillAsync(skillId);
 
-            return result ? Ok(result) : BadRequest();
+            return result ? Ok() : BadRequest();
         }
 
         #endregion

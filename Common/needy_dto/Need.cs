@@ -8,13 +8,17 @@
 
         public IEnumerable<User> Appliers { get; set; }
 
-        public User Applier { get; set; }
+        public User? AcceptedApplier { get; set; }
 
         public string Status { get; set; }
 
+        public string? Description { get; set; }
+
         public DateTime CreationDate { get; set; }
 
-        public DateTime AcceptedDate { get; set; }
+        public DateTime? NeedDate { get; set; }
+
+        public DateTime? AcceptedDate { get; set; }
 
         public Skill RequestedSkill { get; set; }
     }

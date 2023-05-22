@@ -15,7 +15,7 @@ namespace needy_dataAccess
             _connectionString = _configuration.GetConnectionString("PostgreSqlConnection");
         }
 
-        public IDbConnection CreateConnection()
+        public NpgsqlConnection CreateConnection()
             => new NpgsqlConnection(_connectionString);
     }
 }
