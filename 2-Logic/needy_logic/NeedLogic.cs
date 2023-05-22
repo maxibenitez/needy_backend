@@ -33,13 +33,39 @@ namespace needy_logic
 
         public async Task<IEnumerable<Need>> GetNeedsAsync()
         {
-            //return await _needRepository.GetNeedsAsync();
+            List<NeedData> data = (await _needRepository.GetNeedsAsync()).ToList();
+
+            if (data != null)
+            {
+                List<Need> needs = new List<Need>();
+
+                foreach (NeedData need in data)
+                {
+                    needs.Add(await NeedBuilderAsync(need));
+                }
+
+                return needs;
+            }
+
             return null;
         }
 
         public async Task<IEnumerable<Need>> GetNeedsBySkillAsync(int skillId)
         {
-            //return await _needRepository.GetNeedsBySkillAsync(skillId);
+            List<NeedData> data = (await _needRepository.GetNeedsBySkillAsync(skillId)).ToList();
+
+            if (data != null)
+            {
+                List<Need> needs = new List<Need>();
+
+                foreach(NeedData need in data)
+                {
+                    needs.Add(await NeedBuilderAsync(need));
+                }
+
+                return needs;
+            }
+
             return null;
         }
 
@@ -49,30 +75,7 @@ namespace needy_logic
 
             if (data != null)
             {
-                var need = new Need
-                {
-                    Id = data.Id,
-                    Status = data.Status,
-                    Description = data.Description,
-                    CreationDate = data.CreationDate,
-                    NeedDate = data.NeedDate,
-                    AcceptedDate = data.AcceptedDate,
-                };
-
-                //need.RequestedSkill = await _skillRepository.GetSkillById(data.RequestedSkillId);
-                need.Requestor = await _userRepository.GetUserByCIAsync(data.RequestorCI);
-
-                if (data.AppliersCI != null)
-                {
-                    need.Appliers = await GetNeedAppliersAsync(data.AppliersCI);
-                }
-
-                if (data.AcceptedApplierCI != null)
-                {
-                    need.AcceptedApplier = await _userRepository.GetUserByCIAsync(data.AcceptedApplierCI);
-                }
-
-                return need;
+                return await NeedBuilderAsync(data);
             }
 
             return null;  
@@ -116,6 +119,34 @@ namespace needy_logic
         #endregion
 
         #region Private Methods
+
+        private async Task<Need> NeedBuilderAsync (NeedData data)
+        {
+            var need = new Need
+            {
+                Id = data.Id,
+                Status = data.Status,
+                Description = data.Description,
+                CreationDate = data.CreationDate,
+                NeedDate = data.NeedDate,
+                AcceptedDate = data.AcceptedDate,
+            };
+
+            //need.RequestedSkill = await _skillRepository.GetSkillById(data.RequestedSkillId);
+            need.Requestor = await _userRepository.GetUserByCIAsync(data.RequestorCI);
+
+            if (data.AppliersCI != null)
+            {
+                need.Appliers = await GetNeedAppliersAsync(data.AppliersCI);
+            }
+
+            if (data.AcceptedApplierCI != null)
+            {
+                need.AcceptedApplier = await _userRepository.GetUserByCIAsync(data.AcceptedApplierCI);
+            }
+
+            return need;
+        }
 
         private async Task<bool> ChangeStatusAsync(int needId, string status)
         {
