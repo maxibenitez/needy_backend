@@ -14,17 +14,17 @@ namespace needy_logic
 
         private readonly INeedRepository _needRepository;
         private readonly IUserRepository _userRepository;
-        //private readonly ISkillRepository _skillRepository;
+        private readonly ISkillRepository _skillRepository;
 
         #endregion
 
         #region Builders
 
-        public NeedLogic(INeedRepository needRepository, IUserRepository userRepository)//, ISkillRepository skillRepository)
+        public NeedLogic(INeedRepository needRepository, IUserRepository userRepository, ISkillRepository skillRepository)
         {
             _needRepository = needRepository;
             _userRepository = userRepository;
-            //_skillRepository = skillRepository;
+            _skillRepository = skillRepository;
         }
 
         #endregion
@@ -155,7 +155,7 @@ namespace needy_logic
                 AcceptedDate = data.AcceptedDate,
             };
 
-            //need.RequestedSkill = await _skillRepository.GetSkillById(data.RequestedSkillId);
+            need.RequestedSkill = await _skillRepository.GetSkillById(data.RequestedSkillId);
             need.Requestor = await _userRepository.GetUserByCIAsync(data.RequestorCI);
 
             if (data.AppliersCI != null)
