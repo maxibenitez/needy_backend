@@ -134,7 +134,7 @@ namespace needy_dataAccess.Repositories
             }
         }
 
-        public async Task<bool> InsertNeedAsync(InsertNeedParameters parameters)
+        public async Task<bool> InsertNeedAsync(string userCI, InsertNeedParameters parameters)
         {
             using (var connection = _dbConnection.CreateConnection())
             {
@@ -146,7 +146,7 @@ namespace needy_dataAccess.Repositories
                         VALUES (@RequestorCI, @Description, @CreationDate, @NeedDate, @Status, @RequestedSkillId)";
 
                 var command = new NpgsqlCommand(query, connection);
-                command.Parameters.AddWithValue("@RequestorCI", "tomar de la sesion la ci");
+                command.Parameters.AddWithValue("@RequestorCI", userCI);
                 command.Parameters.AddWithValue("@Description", parameters.Description);
                 command.Parameters.AddWithValue("@CreationDate", DateTime.Now);
                 command.Parameters.AddWithValue("@NeedDate", parameters.NeedDate);

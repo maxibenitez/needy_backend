@@ -9,6 +9,8 @@ namespace needy_dataAccess.Interfaces
 
         Task<User> GetUserByCIAsync(string userCI);
 
+        Task<User> GetUserByEmailAsync(string email);
+
         Task<bool> InsertUserAsync(InsertUserParameters parameters);
 
         Task<bool> InsertUserSkillAsync(int skilId);

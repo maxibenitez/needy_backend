@@ -5,6 +5,6 @@ namespace needy_logic_abstraction
 {
     public interface IAuthorizationLogic
     {
-        Task<User> AuthenticateAsync(AuthenticationParameters parameters);
+        Task<bool> AuthenticateAsync(AuthenticationParameters parameters);
     }
 }

@@ -12,8 +12,8 @@ namespace needy_logic_dependency_injection
             .AddScoped<IUserLogic, UserLogic>()
             .AddScoped<IAuthorizationLogic, AuthorizationLogic>()
             .AddScoped<INeedLogic, NeedLogic>()
-            .AddScoped<IRatingLogic, RatingLogic>();
-            //.AddSingleton<IUserContextService, UserContextService>();
+            .AddScoped<IRatingLogic, RatingLogic>()
+            .AddSingleton<IUserContext, UserContextLogic>();
         }
     }
 }

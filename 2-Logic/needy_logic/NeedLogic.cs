@@ -14,17 +14,19 @@ namespace needy_logic
 
         private readonly INeedRepository _needRepository;
         private readonly IUserRepository _userRepository;
-        private readonly ISkillRepository _skillRepository;
+        //private readonly ISkillRepository _skillRepository;
+        private readonly IUserContext _userContext;
 
         #endregion
 
         #region Builders
 
-        public NeedLogic(INeedRepository needRepository, IUserRepository userRepository, ISkillRepository skillRepository)
+        public NeedLogic(INeedRepository needRepository, IUserRepository userRepository, IUserContext userContext)//, ISkillRepository skillRepository)
         {
             _needRepository = needRepository;
             _userRepository = userRepository;
-            _skillRepository = skillRepository;
+            _userContext = userContext;
+            //_skillRepository = skillRepository;
         }
 
         #endregion
@@ -83,7 +85,9 @@ namespace needy_logic
 
         public async Task<bool> InsertNeedAsync(InsertNeedParameters parameters)
         {
-            return await _needRepository.InsertNeedAsync(parameters);
+            Session userSession = _userContext.GetUserSession();
+
+            return await _needRepository.InsertNeedAsync(userSession.CI, parameters);
         }
 
         public async Task<bool> UpdateNeedAsync(int needId, UpdateNeedParameters parameters)
@@ -155,7 +159,7 @@ namespace needy_logic
                 AcceptedDate = data.AcceptedDate,
             };
 
-            need.RequestedSkill = await _skillRepository.GetSkillById(data.RequestedSkillId);
+            //need.RequestedSkill = await _skillRepository.GetSkillById(data.RequestedSkillId);
             need.Requestor = await _userRepository.GetUserByCIAsync(data.RequestorCI);
 
             if (data.AppliersCI != null)

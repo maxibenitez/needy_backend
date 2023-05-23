@@ -15,7 +15,7 @@ namespace needy_dataAccess.Interfaces
 
         Task<string[]> GetNeedAppliersListAsync(int needId);
 
-        Task<bool> InsertNeedAsync(InsertNeedParameters parameters);
+        Task<bool> InsertNeedAsync(string userCI, InsertNeedParameters parameters);
         
         Task<bool> UpdateNeedAsync(int needId, UpdateNeedParameters parameters);
         
