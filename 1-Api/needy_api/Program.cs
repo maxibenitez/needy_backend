@@ -1,5 +1,6 @@
 using needy_logic_dependency_injection;
 using needy_dataAccess;
+using needy_api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<LoginMiddleware>();
 
 app.UseHttpsRedirection();
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using needy_logic;
 using needy_logic_abstraction;
 using needy_logic_abstraction.Parameters;
@@ -6,6 +7,7 @@ using needy_logic_abstraction.Parameters;
 namespace needy_api.Controllers
 {
     [Route("api/ratings")]
+    [ApiController]
     public class RatingController : Controller
     {
         #region Properties and Fields

@@ -6,6 +6,7 @@ using needy_logic_abstraction.Parameters;
 namespace needy_api.Controllers
 {
     [Route("api/users")]
+    [ApiController]
     public class UserController : Controller
     {
         #region Properties and Fields

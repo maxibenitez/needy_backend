@@ -7,6 +7,7 @@ using needy_logic_abstraction.Parameters;
 namespace needy_api.Controllers
 {
     [Route("api/authorization")]
+    [ApiController]
     public class AuthorizationController : Controller
     {
         #region Properties and Fields

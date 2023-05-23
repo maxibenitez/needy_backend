@@ -2,10 +2,12 @@
 using needy_logic_abstraction.Parameters;
 using needy_logic_abstraction;
 using needy_dto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace needy_api.Controllers
 {
     [Route("api/needs")]
+    [ApiController]
     public class NeedController : Controller
     {
         #region Properties and Fields
@@ -83,14 +85,14 @@ namespace needy_api.Controllers
             return await _needLogic.UnapplyNeedAsync(needId, applierCi) ? Ok() : BadRequest();
         }
 
-        [HttpPut("accept-applier")]
-        public async Task<IActionResult> AcceptApplierAsync([FromBody] int needId, [FromBody] string applierCi)
+        [HttpPut("accept-applier/{needId}")]
+        public async Task<IActionResult> AcceptApplierAsync(int needId, [FromBody] string applierCi)
         {
             return await _needLogic.AcceptApplierAsync(needId, applierCi) ? Ok() : BadRequest();
         }
 
-        [HttpDelete("decline-applier")]
-        public async Task<IActionResult> DeclineApplierAsync([FromBody] int needId, [FromBody] string applierCi)
+        [HttpDelete("decline-applier/{needId}")]
+        public async Task<IActionResult> DeclineApplierAsync(int needId, [FromBody] string applierCi)
         {
             return await _needLogic.DeclineApplierAsync(needId, applierCi) ? Ok() : BadRequest();
         }
