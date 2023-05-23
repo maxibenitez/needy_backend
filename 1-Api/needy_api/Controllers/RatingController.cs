@@ -8,6 +8,7 @@ namespace needy_api.Controllers
 {
     [Route("api/ratings")]
     [ApiController]
+    [Authorize]
     public class RatingController : Controller
     {
         #region Properties and Fields

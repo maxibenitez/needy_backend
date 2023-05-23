@@ -23,7 +23,7 @@ namespace needy_dataAccess.Implementation
 
         #region Implments IAuthorizationRepository
 
-        public Task<User> AuthenticateAsync(AuthenticationParameters parameters)
+        public Task<User> AuthenticateAsync(LoginParameters parameters)
         {
             throw new NotImplementedException();
         }

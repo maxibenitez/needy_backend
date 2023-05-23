@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using needy_dto;
 using needy_logic_abstraction;
 using needy_logic_abstraction.Parameters;
@@ -7,6 +8,7 @@ namespace needy_api.Controllers
 {
     [Route("api/users")]
     [ApiController]
+    [Authorize]
     public class UserController : Controller
     {
         #region Properties and Fields

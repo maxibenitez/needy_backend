@@ -5,6 +5,6 @@ namespace needy_dataAccess.Interfaces
 {
     public interface IAuthorizationRepository
     {
-        Task<User> AuthenticateAsync(AuthenticationParameters parameters);
+        Task<User> AuthenticateAsync(LoginParameters parameters);
     }
 }

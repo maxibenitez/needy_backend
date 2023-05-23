@@ -1,7 +1,7 @@
 ﻿
 namespace needy_logic_abstraction.Parameters
 {
-    public class AuthenticationParameters
+    public class LoginParameters
     {
         public string Email { get; set; }
 

@@ -8,6 +8,7 @@ namespace needy_api.Controllers
 {
     [Route("api/needs")]
     [ApiController]
+    [Authorize]
     public class NeedController : Controller
     {
         #region Properties and Fields
