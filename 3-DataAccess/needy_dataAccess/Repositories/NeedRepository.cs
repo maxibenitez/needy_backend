@@ -1,9 +1,7 @@
-﻿using Dapper;
-using needy_dataAccess.Interfaces;
+﻿using needy_dataAccess.Interfaces;
 using needy_dto;
 using needy_logic_abstraction.Parameters;
 using Npgsql;
-using System.Data;
 
 namespace needy_dataAccess.Repositories
 {
@@ -106,30 +104,30 @@ namespace needy_dataAccess.Repositories
             }
         }
 
-        public async Task<string[]> GetNeedAppliersListAsync(int needId)
+        public async Task<IEnumerable<string>> GetNeedAppliersAsync(int needId)
         {
             using (var connection = _dbConnection.CreateConnection())
             {
                 await connection.OpenAsync();
 
                 var query = @"
-                            SELECT ""AppliersCI""
-                            FROM public.""Need""
-                            WHERE ""Id"" = @NeedId";
+                            SELECT ""ApplierCI""
+                            FROM public.""NeedApplier""
+                            WHERE ""NeedId"" = @NeedId";
 
                 var command = new NpgsqlCommand(query, connection);
                 command.Parameters.AddWithValue("@NeedId", needId);
 
-                string[] appliersCI = null;
-
                 using (var reader = await command.ExecuteReaderAsync())
                 {
-                    if (await reader.ReadAsync())
+                    var appliersList = new List<string>();
+
+                    while (await reader.ReadAsync())
                     {
-                        appliersCI = (string[])reader["Appliers"];
+                        appliersList.Add((string)reader["ApplierCI"]);
                     }
 
-                    return appliersCI;
+                    return appliersList;
                 }
             }
         }
@@ -170,7 +168,7 @@ namespace needy_dataAccess.Repositories
                         SET ""Description"" = @Description,
                             ""NeedDate"" = @NeedDate,
                             ""RequestedSkillId"" = @RequestedSkillId
-                        WHERE ""Id"" = @NeedId;";
+                        WHERE ""Id"" = @NeedId";
 
                 var command = new NpgsqlCommand(query, connection);
                 command.Parameters.AddWithValue("@NeedId", needId);
@@ -204,20 +202,60 @@ namespace needy_dataAccess.Repositories
             }
         }
 
-        public async Task<bool> UpdateAppliersListAsync(int needId, string[] appliersCI)
+        public async Task<bool> DeleteNeedAppliersAsync(int needId)
         {
             using (var connection = _dbConnection.CreateConnection())
             {
                 await connection.OpenAsync();
 
                 var query = @"
-                        UPDATE public.""Need""
-                        SET ""AppliersCI"" = @AppliersCI
-                        WHERE ""Id"" = @NeedId;";
+                            DELETE
+                            FROM public.""NeedApplier""
+                            WHERE ""NeedId"" = @NeedId";
 
                 var command = new NpgsqlCommand(query, connection);
                 command.Parameters.AddWithValue("@NeedId", needId);
-                command.Parameters.AddWithValue("@AppliersCI", appliersCI);
+
+                var result = await command.ExecuteNonQueryAsync();
+
+                return result > 0;
+            }
+        }
+
+        public async Task<bool> ApplyNeedAsync(int needId, string applierCI)
+        {
+            using (var connection = _dbConnection.CreateConnection())
+            {
+                await connection.OpenAsync();
+
+                var query = @"
+                        INSERT INTO public.""NeedApplier"" (""NeedId"", ""ApplierCI"")
+                        VALUES (@NeedId, @ApplierCI)";
+
+                var command = new NpgsqlCommand(query, connection);
+                command.Parameters.AddWithValue("@NeedId", needId);
+                command.Parameters.AddWithValue("@ApplierCI", applierCI);
+
+                var result = await command.ExecuteNonQueryAsync();
+
+                return result > 0;
+            }
+        }
+
+        public async Task<bool> DeleteNeedApplierAsync(int needId, string applierCI)
+        {
+            using (var connection = _dbConnection.CreateConnection())
+            {
+                await connection.OpenAsync();
+
+                var query = @"
+                            DELETE
+                            FROM public.""NeedApplier""
+                            WHERE ""NeedId"" = @NeedId AND ""ApplierCI"" = @ApplierCI";
+
+                var command = new NpgsqlCommand(query, connection);
+                command.Parameters.AddWithValue("@NeedId", needId);
+                command.Parameters.AddWithValue("@ApplierCI", applierCI);
 
                 var result = await command.ExecuteNonQueryAsync();
 
@@ -279,7 +317,6 @@ namespace needy_dataAccess.Repositories
             {
                 Id = (int)reader["Id"],
                 RequestorCI = (string)reader["RequestorCI"],
-                AppliersCI = reader.IsDBNull(reader.GetOrdinal("AppliersCI")) ? null : (IEnumerable<string?>)reader["AppliersCI"],
                 AcceptedApplierCI = reader.IsDBNull(reader.GetOrdinal("AcceptedApplierCI")) ? null : (string?)reader["AcceptedApplierCI"],
                 Status = (string)reader["Status"],
                 Description = reader.IsDBNull(reader.GetOrdinal("Description")) ? null : (string?)reader["Description"],

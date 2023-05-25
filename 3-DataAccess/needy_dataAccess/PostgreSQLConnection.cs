@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Npgsql;
-using System.Data;
 
 namespace needy_dataAccess
 {

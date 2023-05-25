@@ -12,8 +12,6 @@ namespace needy_dto
 
         public string RequestorCI { get; set; }
 
-        public IEnumerable<string> AppliersCI { get; set; }
-
         public string? AcceptedApplierCI { get; set; }
 
         public string Status { get; set; }

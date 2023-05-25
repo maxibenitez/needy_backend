@@ -13,7 +13,7 @@ namespace needy_dataAccess.Interfaces
 
         Task<NeedData> GetNeedByIdAsync(int needId);
 
-        Task<string[]> GetNeedAppliersListAsync(int needId);
+        Task<IEnumerable<string>> GetNeedAppliersAsync(int needId);
 
         Task<bool> InsertNeedAsync(string userCI, InsertNeedParameters parameters);
         
@@ -21,7 +21,11 @@ namespace needy_dataAccess.Interfaces
         
         Task<bool> DeleteNeedAsync(int needId);
 
-        Task<bool> UpdateAppliersListAsync(int needId, string[] appliersCI);
+        Task<bool> DeleteNeedAppliersAsync(int needId);
+
+        Task<bool> ApplyNeedAsync(int needId, string applierCi);
+
+        Task<bool> DeleteNeedApplierAsync(int needId, string applierCi);
 
         Task<bool> AcceptApplierAsync(int needId, string applierCI);
 

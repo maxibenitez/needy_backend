@@ -2,12 +2,10 @@
 {
     public class Rating
     {
-        public int Id { get; set; }
+        public User Giver { get; set; }
 
-        public User User { get; set; }
+        public double Stars { get; set; }
 
-        public decimal Average { get; set; }
-
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
     }
 }

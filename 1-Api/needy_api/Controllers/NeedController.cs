@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using needy_logic_abstraction.Parameters;
 using needy_logic_abstraction;
-using needy_dto;
 using Microsoft.AspNetCore.Authorization;
 
 namespace needy_api.Controllers
@@ -51,7 +50,7 @@ namespace needy_api.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState.Values);
             }
 
             return await _needLogic.InsertNeedAsync(parameters) ? Ok() : BadRequest();
@@ -62,7 +61,7 @@ namespace needy_api.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState.Values);
             }
 
             return await _needLogic.UpdateNeedAsync(needId, parameters) ? Ok() : BadRequest();
@@ -75,15 +74,15 @@ namespace needy_api.Controllers
         }
 
         [HttpPut("apply-need/{needId}")]
-        public async Task<IActionResult> ApplyNeedAsync(int needId, [FromBody] string applierCi)
+        public async Task<IActionResult> ApplyNeedAsync(int needId)
         {
-            return await _needLogic.ApplyNeedAsync(needId, applierCi) ? Ok() : BadRequest();
+            return await _needLogic.ApplyNeedAsync(needId) ? Ok() : BadRequest();
         }
 
         [HttpPut("unapply-need/{needId}")]
-        public async Task<IActionResult> UnapplyNeedAsync(int needId, [FromBody] string applierCi)
+        public async Task<IActionResult> UnapplyNeedAsync(int needId)
         {
-            return await _needLogic.UnapplyNeedAsync(needId, applierCi) ? Ok() : BadRequest();
+            return await _needLogic.UnapplyNeedAsync(needId) ? Ok() : BadRequest();
         }
 
         [HttpPut("accept-applier/{needId}")]

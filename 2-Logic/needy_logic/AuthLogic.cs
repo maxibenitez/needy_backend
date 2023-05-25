@@ -1,5 +1,4 @@
 ﻿using needy_dataAccess.Interfaces;
-using needy_dataAccess.Repositories;
 using needy_dto;
 using needy_logic_abstraction;
 using needy_logic_abstraction.Parameters;
@@ -8,6 +7,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Configuration;
+using needy_logic_abstraction.Enumerables;
 
 namespace needy_logic
 {
@@ -34,7 +34,7 @@ namespace needy_logic
 
         public async Task<string> LoginAsync(LoginParameters parameters)
         {
-            User user = await _userRepository.GetUserByEmailAsync(parameters.Email);
+            UserData user = await _userRepository.GetUserByEmailAsync(parameters.Email);
             string token = "";
 
             if (user != null)
@@ -52,19 +52,40 @@ namespace needy_logic
             return token;
         }
 
-        public async Task<bool> RegisterAsync(RegisterParameters parameters)
+        public async Task<RegisterStatus> RegisterAsync(RegisterParameters parameters)
         {
+            UserData userCI = await _userRepository.GetUserByCIAsync(parameters.CI);
+
+            if (userCI is not null)
+            {
+                return RegisterStatus.UserAlreadyExist;
+            }
+
+            UserData userEmail = await _userRepository.GetUserByEmailAsync(parameters.Email);
+
+            if (userEmail is not null)
+            {
+                return RegisterStatus.EmailAlreadyExist;
+            }
+
             var hashpwd = BCrypt.Net.BCrypt.HashPassword(parameters.Password);
             parameters.Password = hashpwd;
 
-            return await _userRepository.InsertUserAsync(parameters);
+            var result = await _userRepository.InsertUserAsync(parameters);
+
+            if (result)
+            {
+                return RegisterStatus.Success;
+            }
+
+            return RegisterStatus.InternalServerError;
         }
 
         #endregion
 
         #region Private Methods
 
-        private string GenerateJwtToken(User user)
+        private string GenerateJwtToken(UserData user)
         {
             var claims = new List<Claim>
             {

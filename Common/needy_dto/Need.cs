@@ -6,7 +6,7 @@
 
         public User Requestor { get; set; }
 
-        public IEnumerable<User> Appliers { get; set; }
+        public IEnumerable<User>? Appliers { get; set; }
 
         public User? AcceptedApplier { get; set; }
 

@@ -1,5 +1,4 @@
-﻿using Dapper;
-using needy_dataAccess.Interfaces;
+﻿using needy_dataAccess.Interfaces;
 using needy_dto;
 using needy_logic_abstraction.Parameters;
 using Npgsql;
@@ -25,7 +24,7 @@ namespace needy_dataAccess.Repositories
 
         #region Implments IUserRepository
 
-        public async Task<IEnumerable<User>> GetUsersAsync()
+        public async Task<IEnumerable<UserData>> GetUsersAsync()
         {
             using (var connection = _dbConnection.CreateConnection())
             {
@@ -39,7 +38,7 @@ namespace needy_dataAccess.Repositories
 
                 using (var reader = await command.ExecuteReaderAsync())
                 {
-                    var users = new List<User>();
+                    var users = new List<UserData>();
 
                     while (await reader.ReadAsync())
                     {
@@ -51,7 +50,35 @@ namespace needy_dataAccess.Repositories
             }
         }
 
-        public async Task<User> GetUserByCIAsync(string userCI)
+        public async Task<IEnumerable<UserData>> GetUsersBySkillAsync(int skillId)
+        {
+            using (var connection = _dbConnection.CreateConnection())
+            {
+                await connection.OpenAsync();
+
+                var query = @"
+                            SELECT *
+                            FROM public.""User""
+                            WHERE ""SkillId"" = @SkillId";
+
+                var command = new NpgsqlCommand(query, connection);
+                command.Parameters.AddWithValue("@SkillId", skillId);
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    var users = new List<UserData>();
+
+                    while (await reader.ReadAsync())
+                    {
+                        users.Add(await UserBuilderAsync(reader));
+                    }
+
+                    return users;
+                }
+            }
+        }
+
+        public async Task<UserData> GetUserByCIAsync(string userCI)
         {
             using (var connection = _dbConnection.CreateConnection())
             {
@@ -77,7 +104,7 @@ namespace needy_dataAccess.Repositories
             }
         }
 
-        public async Task<User> GetUserByEmailAsync(string email)
+        public async Task<UserData> GetUserByEmailAsync(string email)
         {
             using (var connection = _dbConnection.CreateConnection())
             {
@@ -132,18 +159,34 @@ namespace needy_dataAccess.Repositories
             }
         }
 
-        public Task<bool> InsertUserSkillAsync(int skilId)
+        public async Task<bool> InsertUserSkillAsync(string userCI, int skillId)
         {
-            throw new NotImplementedException();
+            using (var connection = _dbConnection.CreateConnection())
+            {
+                await connection.OpenAsync();
+
+                var query = @"
+                        UPDATE public.""User""
+                        SET ""SkillId"" = @SkillId
+                        WHERE ""CI"" = @CI";
+
+                var command = new NpgsqlCommand(query, connection);
+                command.Parameters.AddWithValue("@CI", userCI);
+                command.Parameters.AddWithValue("@SkillId", skillId);
+
+                var result = await command.ExecuteNonQueryAsync();
+
+                return result > 0;
+            }
         }
 
         #endregion
 
         #region Private Methods
 
-        private async Task<User> UserBuilderAsync(NpgsqlDataReader reader)
+        private async Task<UserData> UserBuilderAsync(NpgsqlDataReader reader)
         {
-            var user = new User
+            var user = new UserData
             {
                 CI = (string)reader["CI"],
                 FirstName = (string)reader["FirstName"],
@@ -155,6 +198,7 @@ namespace needy_dataAccess.Repositories
                 BirthDate = (DateTime)reader["BirthDate"],
                 Email = (string)reader["Email"],
                 Password = (string)reader["Password"],
+                SkillId = reader.IsDBNull(reader.GetOrdinal("SkillId")) ? null : (int?)reader["SkillId"],
             };
 
             return user;

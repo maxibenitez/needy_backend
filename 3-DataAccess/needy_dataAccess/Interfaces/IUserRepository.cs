@@ -5,14 +5,16 @@ namespace needy_dataAccess.Interfaces
 {
     public interface IUserRepository
     {
-        Task<IEnumerable<User>> GetUsersAsync();
+        Task<IEnumerable<UserData>> GetUsersAsync();
 
-        Task<User> GetUserByCIAsync(string userCI);
+        Task<IEnumerable<UserData>> GetUsersBySkillAsync(int skillId);
 
-        Task<User> GetUserByEmailAsync(string email);
+        Task<UserData> GetUserByCIAsync(string userCI);
+
+        Task<UserData> GetUserByEmailAsync(string email);
 
         Task<bool> InsertUserAsync(RegisterParameters parameters);
 
-        Task<bool> InsertUserSkillAsync(int skilId);
+        Task<bool> InsertUserSkillAsync(string userCI, int skillId);
     }
 }

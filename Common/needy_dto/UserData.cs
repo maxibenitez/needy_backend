@@ -1,6 +1,6 @@
 ﻿namespace needy_dto
 {
-    public class User
+    public class UserData
     {
         public string CI { get; set; }
 
@@ -14,12 +14,14 @@
 
         public string Phone { get; set; }
 
+        public string Gender { get; set; }
+
         public DateTime BirthDate { get; set; }
 
-        public Skill? Skill { get; set; }
+        public string Email { get; set; }
 
-        public double? AvgRating { get; set; }
+        public string Password { get; set; }
 
-        public IEnumerable<Rating>? Ratings { get; set; }
+        public int? SkillId { get; set; }
     }
 }

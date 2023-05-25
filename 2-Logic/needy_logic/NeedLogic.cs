@@ -3,12 +3,7 @@ using needy_dataAccess.Interfaces;
 using needy_dto;
 using needy_logic_abstraction;
 using needy_logic_abstraction.Parameters;
-using Npgsql;
-using System.Data;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http;
-using System.Reflection.PortableExecutable;
-using System.Security.Claims;
 
 namespace needy_logic
 {
@@ -17,20 +12,23 @@ namespace needy_logic
         #region Properties and Fields
 
         private readonly INeedRepository _needRepository;
-        private readonly IUserRepository _userRepository;
-        //private readonly ISkillRepository _skillRepository;
+        private readonly ISkillRepository _skillRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserLogic _userLogic;
 
         #endregion
 
         #region Builders
 
-        public NeedLogic(INeedRepository needRepository, IUserRepository userRepository, IHttpContextAccessor httpContextAccessor)//, ISkillRepository skillRepository)
+        public NeedLogic(INeedRepository needRepository, 
+            IHttpContextAccessor httpContextAccessor,
+            ISkillRepository skillRepository,
+            IUserLogic userLogic)
         {
             _needRepository = needRepository;
-            _userRepository = userRepository;
             _httpContextAccessor = httpContextAccessor;
-            //_skillRepository = skillRepository;
+            _skillRepository = skillRepository;
+            _userLogic = userLogic;
         }
 
         #endregion
@@ -101,35 +99,28 @@ namespace needy_logic
 
         public async Task<bool> DeleteNeedAsync(int needId)
         {
+            await _needRepository.DeleteNeedAppliersAsync(needId);
+
             return await _needRepository.DeleteNeedAsync(needId);
         }
 
-        public async Task<bool> ApplyNeedAsync(int needId, string applierCI)
+        public async Task<bool> ApplyNeedAsync(int needId)
         {
-            string[] appliersCI = await _needRepository.GetNeedAppliersListAsync(needId);
+            string applierCI = await GetUserCIFromToken();
 
-            List<string> updatedAppliersCI = appliersCI?.ToList() ?? new List<string>();
-
-            if (!updatedAppliersCI.Contains(applierCI))
-            {
-                updatedAppliersCI.Add(applierCI);
-            }
-
-            return await _needRepository.UpdateAppliersListAsync(needId, updatedAppliersCI.ToArray());
+            return await _needRepository.ApplyNeedAsync(needId, applierCI);
         }
 
-        public async Task<bool> UnapplyNeedAsync(int needId, string applierCI)
+        public async Task<bool> UnapplyNeedAsync(int needId)
         {
-            string[] appliersCI = await _needRepository.GetNeedAppliersListAsync(needId);
+            string applierCI = await GetUserCIFromToken();
 
-            List<string> updatedAppliersCI = appliersCI?.ToList() ?? new List<string>();
-            updatedAppliersCI.Remove(applierCI);
-
-            return await _needRepository.UpdateAppliersListAsync(needId, updatedAppliersCI.ToArray());
+            return await _needRepository.DeleteNeedApplierAsync(needId, applierCI);
         }
 
         public async Task<bool> AcceptApplierAsync(int needId, string applierCI)
         {
+            //chequear que el usuario esté aplicado en la need
             var result = await _needRepository.AcceptApplierAsync(needId, applierCI);
 
             ChangeStatusAsync(needId, "Aceptada");
@@ -139,12 +130,7 @@ namespace needy_logic
 
         public async Task<bool> DeclineApplierAsync(int needId, string applierCI)
         {
-            string[] appliersCI = await _needRepository.GetNeedAppliersListAsync(needId);
-
-            List<string> updatedAppliersCI = appliersCI?.ToList() ?? new List<string>();
-            updatedAppliersCI.Remove(applierCI);
-
-            return await _needRepository.UpdateAppliersListAsync(needId, updatedAppliersCI.ToArray());
+            return await _needRepository.DeleteNeedApplierAsync(needId, applierCI);
         }
 
         #endregion
@@ -163,17 +149,13 @@ namespace needy_logic
                 AcceptedDate = data.AcceptedDate,
             };
 
-            //need.RequestedSkill = await _skillRepository.GetSkillById(data.RequestedSkillId);
-            need.Requestor = await _userRepository.GetUserByCIAsync(data.RequestorCI);
+            need.RequestedSkill = await _skillRepository.GetSkillByIdAsync(data.RequestedSkillId);
+            need.Appliers = await GetNeedAppliersAsync(data.Id);
+            need.Requestor = await _userLogic.GetUserByCIAsync(data.RequestorCI);
 
-            if (data.AppliersCI != null)
+            if (data.AcceptedApplierCI is not null)
             {
-                need.Appliers = await GetNeedAppliersAsync(data.AppliersCI);
-            }
-
-            if (data.AcceptedApplierCI != null)
-            {
-                need.AcceptedApplier = await _userRepository.GetUserByCIAsync(data.AcceptedApplierCI);
+                need.AcceptedApplier = await _userLogic.GetUserByCIAsync(data.AcceptedApplierCI);
             }
 
             return need;
@@ -184,13 +166,15 @@ namespace needy_logic
             return await _needRepository.ChangeStatusAsync(needId, status);
         }
 
-        private async Task<IEnumerable<User>> GetNeedAppliersAsync(IEnumerable<string> appliersCI)
+        private async Task<IEnumerable<User>> GetNeedAppliersAsync(int needId)
         {
+            var appliersCI = await _needRepository.GetNeedAppliersAsync(needId);
+
             List<User> appliers = new List<User>();
 
             foreach (string applierCI in appliersCI)
             {
-                appliers.Add(await _userRepository.GetUserByCIAsync(applierCI));
+                appliers.Add(await _userLogic.GetUserByCIAsync(applierCI));
             }
 
             return appliers;

@@ -17,9 +17,9 @@ namespace needy_logic_abstraction
         
         Task<bool> DeleteNeedAsync(int needId);
 
-        Task<bool> ApplyNeedAsync(int needId, string applierCi);
+        Task<bool> ApplyNeedAsync(int needId);
 
-        Task<bool> UnapplyNeedAsync(int needId, string applierCi);
+        Task<bool> UnapplyNeedAsync(int needId);
 
         Task<bool> AcceptApplierAsync(int needId, string applierCi);
 

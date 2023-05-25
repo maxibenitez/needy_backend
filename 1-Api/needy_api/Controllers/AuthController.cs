@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using needy_dto;
 using needy_logic_abstraction;
+using needy_logic_abstraction.Enumerables;
 using needy_logic_abstraction.Parameters;
+using System.Net;
 
 namespace needy_api.Controllers
 {
@@ -43,6 +44,29 @@ namespace needy_api.Controllers
             }
 
             return Ok(token);
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> RegisterAsync([FromBody] RegisterParameters parameters)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+
+            RegisterStatus status = await _authorizationLogic.RegisterAsync(parameters);
+
+            switch (status)
+            {
+                case RegisterStatus.Success:
+                    return Ok("Registro exitoso");
+                case RegisterStatus.UserAlreadyExist:
+                    return BadRequest("Ya existe un usuario registrado con esa CI");
+                case RegisterStatus.EmailAlreadyExist:
+                    return BadRequest("Ya existe un usuario registrado con ese email");
+                default:
+                    return StatusCode((int)HttpStatusCode.InternalServerError, "Ha ocurrido un error");
+            }
         }
 
         #endregion

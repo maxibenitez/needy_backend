@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using needy_dto;
 using needy_logic_abstraction;
-using needy_logic_abstraction.Parameters;
 
 namespace needy_api.Controllers
 {
@@ -32,6 +30,13 @@ namespace needy_api.Controllers
         public async Task<IActionResult> GetUsersAsync()
         {
             return Ok(await _userLogic.GetUsersAsync());
+        }
+
+        [HttpGet("get-users-by-skill/{skillId}")]
+        public async Task<IActionResult> GetUsersBySkillAsync(int skillId)
+        {
+            //TODO
+            return Ok(await _userLogic.GetUsersBySkillAsync(skillId));
         }
 
         [HttpGet("get-user-by-ci")]

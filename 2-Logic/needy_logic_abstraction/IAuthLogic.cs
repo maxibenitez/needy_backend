@@ -1,4 +1,4 @@
-﻿using needy_dto;
+﻿using needy_logic_abstraction.Enumerables;
 using needy_logic_abstraction.Parameters;
 
 namespace needy_logic_abstraction
@@ -7,6 +7,6 @@ namespace needy_logic_abstraction
     {
         Task<string> LoginAsync(LoginParameters parameters);
 
-        Task<bool> RegisterAsync(RegisterParameters parameters);
+        Task<RegisterStatus> RegisterAsync(RegisterParameters parameters);
     }
 }
