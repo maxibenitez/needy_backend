@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using needy_dataAccess.Implementation;
 using needy_dataAccess.Interfaces;
 using needy_dataAccess.Repositories;
 
@@ -12,7 +11,6 @@ namespace needy_dataAccess
             return services
             .AddSingleton<PostgreSQLConnection>()
             .AddScoped<IUserRepository, UserRepository>()
-            .AddScoped<IAuthorizationRepository, AuthorizationRepository>()
             .AddScoped<INeedRepository, NeedRepository>()
             .AddScoped<IRatingRepository, RatingRepository>();
         }

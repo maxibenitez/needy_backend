@@ -1,7 +1,7 @@
 ﻿
 namespace needy_logic_abstraction.Parameters
 {
-    public class InsertUserParameters
+    public class RegisterParameters
     {
         public string CI { get; set; }
 

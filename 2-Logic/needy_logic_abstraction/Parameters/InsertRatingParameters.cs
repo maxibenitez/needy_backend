@@ -3,12 +3,12 @@ namespace needy_logic_abstraction.Parameters
 {
     public class InsertRatingParameters
     {
-        public string CiRequestor { get; set; }
+        public int NeedId { get; set; }
 
-        public string CiHelper { get; set; }
+        public string ReceiverCI { get; set; }
 
-        public decimal Rating { get; set; }
+        public decimal Stars { get; set; }
 
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
     }
 }

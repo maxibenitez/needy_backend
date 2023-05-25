@@ -9,8 +9,6 @@ namespace needy_logic_abstraction
 
         Task<User> GetUserByCIAsync(string userCI);
 
-        Task<bool> InsertUserAsync(InsertUserParameters parameters);
-
         Task<bool> InsertUserSkillAsync(int skilId);
     }
 }

@@ -103,7 +103,7 @@ namespace needy_dataAccess.Repositories
             }
         }
 
-        public async Task<bool> InsertUserAsync(InsertUserParameters parameters)
+        public async Task<bool> InsertUserAsync(RegisterParameters parameters)
         {
             using (var connection = _dbConnection.CreateConnection())
             {

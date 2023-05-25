@@ -22,6 +22,6 @@
 
         public string Password { get; set; }
 
-        public Skill? Skill { get; set; }
+        public IEnumerable<Skill?> Skills { get; set; }
     }
 }

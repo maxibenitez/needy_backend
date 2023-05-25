@@ -34,13 +34,7 @@ namespace needy_logic
             return await _userRepository.GetUserByCIAsync(userCI);
         }
 
-        public async Task<bool> InsertUserAsync(InsertUserParameters parameters)
-        {
-            var hashpwd = BCrypt.Net.BCrypt.HashPassword(parameters.Password);
-            parameters.Password = hashpwd;
-
-            return await _userRepository.InsertUserAsync(parameters);
-        }
+        
 
         public Task<bool> InsertUserSkillAsync(int skilId)
         {

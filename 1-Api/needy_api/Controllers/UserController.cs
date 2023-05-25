@@ -40,19 +40,6 @@ namespace needy_api.Controllers
             return Ok(await _userLogic.GetUserByCIAsync(userCI));
         }
 
-        [HttpPost("insert-user")]
-        public async Task<IActionResult> InsertUserAsync([FromBody] InsertUserParameters parameters)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            var result = await _userLogic.InsertUserAsync(parameters);
-            
-            return result ? Ok(result) : BadRequest();
-        }
-
         [HttpPost("insert-user-skill")]
         public async Task<IActionResult> InsertUserSkillAsync([FromBody] int skillId)
         {

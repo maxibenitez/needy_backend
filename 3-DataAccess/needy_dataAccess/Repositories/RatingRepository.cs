@@ -44,9 +44,9 @@ namespace needy_dataAccess.Repositories
 
             var result = await connection.ExecuteAsync(query, new
             {
-                parameters.CiRequestor,
-                parameters.CiHelper,
-                parameters.Rating,
+                //parameters.CiRequestor,
+                //parameters.CiHelper,
+                //parameters.Rating,
                 parameters.Comment
             });
 

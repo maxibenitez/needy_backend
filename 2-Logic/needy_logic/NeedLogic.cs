@@ -1,10 +1,14 @@
-﻿using needy_dataAccess.Interfaces;
+﻿using Microsoft.AspNetCore.Http;
+using needy_dataAccess.Interfaces;
 using needy_dto;
 using needy_logic_abstraction;
 using needy_logic_abstraction.Parameters;
 using Npgsql;
 using System.Data;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http;
 using System.Reflection.PortableExecutable;
+using System.Security.Claims;
 
 namespace needy_logic
 {
@@ -15,17 +19,17 @@ namespace needy_logic
         private readonly INeedRepository _needRepository;
         private readonly IUserRepository _userRepository;
         //private readonly ISkillRepository _skillRepository;
-        private readonly IUserContext _userContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         #endregion
 
         #region Builders
 
-        public NeedLogic(INeedRepository needRepository, IUserRepository userRepository, IUserContext userContext)//, ISkillRepository skillRepository)
+        public NeedLogic(INeedRepository needRepository, IUserRepository userRepository, IHttpContextAccessor httpContextAccessor)//, ISkillRepository skillRepository)
         {
             _needRepository = needRepository;
             _userRepository = userRepository;
-            _userContext = userContext;
+            _httpContextAccessor = httpContextAccessor;
             //_skillRepository = skillRepository;
         }
 
@@ -85,9 +89,9 @@ namespace needy_logic
 
         public async Task<bool> InsertNeedAsync(InsertNeedParameters parameters)
         {
-            Session userSession = _userContext.GetUserSession();
+            string userCI = await GetUserCIFromToken();
 
-            return await _needRepository.InsertNeedAsync(userSession.CI, parameters);
+            return await _needRepository.InsertNeedAsync(userCI, parameters);
         }
 
         public async Task<bool> UpdateNeedAsync(int needId, UpdateNeedParameters parameters)
@@ -190,6 +194,27 @@ namespace needy_logic
             }
 
             return appliers;
+        }
+
+        private async Task<string> GetUserCIFromToken()
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+
+            if (httpContext.Request.Headers.ContainsKey("Authorization"))
+            {
+                var authorizationHeader = httpContext.Request.Headers["Authorization"];
+                var token = authorizationHeader.ToString().Replace("Bearer ", string.Empty);
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var jwtToken = tokenHandler.ReadJwtToken(token);
+
+                if (jwtToken.Payload.TryGetValue("CI", out var userCI))
+                {
+                    return userCI.ToString();
+                }
+            }
+
+            return null;
         }
 
         #endregion

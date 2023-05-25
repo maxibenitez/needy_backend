@@ -15,23 +15,16 @@ namespace needy_logic
     {
         #region Properties and Fields
 
-        private readonly IAuthorizationRepository _authorizationRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IUserContext _userContext;
         private readonly IConfiguration _configuration;
 
         #endregion
 
         #region Builders
 
-        public AuthLogic(IAuthorizationRepository authorizationRepository, 
-            IUserRepository userRepository, 
-            IUserContext userContext,
-            IConfiguration configuration)
+        public AuthLogic(IUserRepository userRepository, IConfiguration configuration)
         {
-            _authorizationRepository = authorizationRepository;
             _userRepository = userRepository;
-            _userContext = userContext;
             _configuration = configuration;
         }
 
@@ -50,9 +43,6 @@ namespace needy_logic
 
                 if (result)
                 {
-                    //_userContext.NewSession();
-                    //SetSession(user);
-
                     return GenerateJwtToken(user);
                 }
 
@@ -62,23 +52,17 @@ namespace needy_logic
             return token;
         }
 
+        public async Task<bool> RegisterAsync(RegisterParameters parameters)
+        {
+            var hashpwd = BCrypt.Net.BCrypt.HashPassword(parameters.Password);
+            parameters.Password = hashpwd;
+
+            return await _userRepository.InsertUserAsync(parameters);
+        }
+
         #endregion
 
         #region Private Methods
-
-        private void SetSession(User user)
-        {
-            Session userSession = new()
-            {
-                CI = user.CI,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                LoginDate = DateTime.Now
-            };
-
-            _userContext.SetUserSession(userSession);
-        }
 
         private string GenerateJwtToken(User user)
         {
