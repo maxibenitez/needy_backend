@@ -33,7 +33,7 @@ namespace needy_api.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState.Values);
             }
 
             string token = await _authorizationLogic.LoginAsync(parameters);

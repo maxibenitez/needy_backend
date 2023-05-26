@@ -43,7 +43,7 @@ namespace needy_api.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState.Values);
             }
 
             var result = await _ratingLogic.InsertRatingAsync(parameters);

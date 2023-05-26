@@ -1,5 +1,4 @@
-﻿using Dapper;
-using needy_dataAccess.Interfaces;
+﻿using needy_dataAccess.Interfaces;
 using needy_dto;
 using needy_logic_abstraction.Parameters;
 using Npgsql;

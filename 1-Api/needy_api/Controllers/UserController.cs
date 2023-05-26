@@ -49,12 +49,12 @@ namespace needy_api.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState.Values);
             }
 
             var result = await _userLogic.InsertUserSkillAsync(skillId);
 
-            return result ? Ok() : BadRequest();
+            return result ? Ok(result) : BadRequest();
         }
 
         #endregion

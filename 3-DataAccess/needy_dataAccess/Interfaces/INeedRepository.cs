@@ -1,7 +1,5 @@
 ﻿using needy_dto;
 using needy_logic_abstraction.Parameters;
-using Npgsql;
-using System.Data;
 
 namespace needy_dataAccess.Interfaces
 {
