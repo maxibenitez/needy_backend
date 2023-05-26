@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using needy_dataAccess.Interfaces;
+using needy_dataAccess.Repositories;
 using needy_dto;
 using needy_logic_abstraction;
 using Npgsql;
@@ -13,7 +14,7 @@ namespace needy_logic
 
         private readonly IUserRepository _userRepository;
         private readonly ISkillRepository _skillRepository;
-        private readonly IRatingLogic _ratingLogic;
+        private readonly IRatingRepository _ratingRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         #endregion
@@ -22,12 +23,12 @@ namespace needy_logic
 
         public UserLogic(IUserRepository userRepository,
             ISkillRepository skillRepository,
-            IRatingLogic ratingLogic,
+            IRatingRepository ratingRepository,
             IHttpContextAccessor httpContextAccessor)
         {
             _userRepository = userRepository;
             _skillRepository = skillRepository;
-            _ratingLogic = ratingLogic;
+            _ratingRepository = ratingRepository;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -118,12 +119,16 @@ namespace needy_logic
                 user.Skill = await _skillRepository.GetSkillByIdAsync((int)data.SkillId);
             }
 
-            
-            user.Ratings = (await _ratingLogic.GetUserRatingsAsync(data.CI)).ToList();
-            user.AvgRating = await GetRatingAverageAsync(user.Ratings);
+            List<Rating> ratings = (await _ratingRepository.GetUserRatingsAsync(data.CI)).ToList();
+
+            if(ratings.Count > 0)
+            {
+                user.AvgRating = await GetRatingAverageAsync(ratings);
+            }
 
             return user;
         }
+
 
         private async Task<double> GetRatingAverageAsync(IEnumerable<Rating> ratings)
         {

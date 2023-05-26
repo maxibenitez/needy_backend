@@ -25,7 +25,7 @@ namespace needy_dataAccess.Repositories
 
         #region Implments IRatingRepository
 
-        public async Task<IEnumerable<RatingData>> GetUserRatingsAsync(string userCI)
+        public async Task<IEnumerable<Rating>> GetUserRatingsAsync(string userCI)
         {
             using (var connection = _dbConnection.CreateConnection())
             {
@@ -41,7 +41,7 @@ namespace needy_dataAccess.Repositories
 
                 using (var reader = await command.ExecuteReaderAsync())
                 {
-                    var ratings = new List<RatingData>();
+                    var ratings = new List<Rating>();
 
                     while (await reader.ReadAsync())
                     {
@@ -53,32 +53,36 @@ namespace needy_dataAccess.Repositories
             }
         }
 
-        public async Task<bool> InsertRatingAsync(InsertRatingParameters parameters)
+        public async Task<bool> InsertRatingAsync(string giverCI, InsertRatingParameters parameters)
         {
-            using var connection = _dbConnection.CreateConnection();
-
-            var query = @"
-                            INSERT INTO public.""Rating"" (""CiRequestor"", ""CiHelper"", ""Rating"", ""Comment"")
-                            VALUES (@CiRequestor, @CiHelper, @Rating, @Comment)";
-
-            var result = await connection.ExecuteAsync(query, new
+            using (var connection = _dbConnection.CreateConnection())
             {
-                //parameters.CiRequestor,
-                //parameters.CiHelper,
-                //parameters.Rating,
-                parameters.Comment
-            });
+                await connection.OpenAsync();
 
-            return result > 0;
+                var query = @"
+                            INSERT INTO public.""Rating"" (""NeedId"", ""GiverCI"", ""ReceiverCI"", ""Stars"", ""Comment"")
+                            VALUES (@NeedId, @GiverCI, @ReceiverCI, @Stars, @Comment)";
+
+                var command = new NpgsqlCommand(query, connection);
+                command.Parameters.AddWithValue("@NeedId", parameters.NeedId);
+                command.Parameters.AddWithValue("@GiverCI", giverCI);
+                command.Parameters.AddWithValue("@ReceiverCI", parameters.ReceiverCI);
+                command.Parameters.AddWithValue("@Stars", parameters.Stars);
+                command.Parameters.AddWithValue("@Comment", parameters.Comment);
+
+                var result = await command.ExecuteNonQueryAsync();
+
+                return result > 0;
+            }
         }
 
         #endregion
 
         #region Private Methods
 
-        private async Task<RatingData> RatingBuilderAsync(NpgsqlDataReader reader)
+        private async Task<Rating> RatingBuilderAsync(NpgsqlDataReader reader)
         {
-            var rating = new RatingData
+            var rating = new Rating
             {
                 Id = (int)reader["Id"],
                 GiverCI = (string)reader["GiverCI"],

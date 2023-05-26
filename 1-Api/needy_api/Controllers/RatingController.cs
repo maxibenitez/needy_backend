@@ -27,6 +27,17 @@ namespace needy_api.Controllers
 
         #region Implements
 
+        [HttpGet("get-ratings-by-user")]
+        public async Task<IActionResult> GetUserRatingsAsync([FromBody] string userCI)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+
+            return Ok(await _ratingLogic.GetUserRatingsAsync(userCI));
+        }
+
         [HttpPost("insert-rating")]
         public async Task<IActionResult> InsertRatingAsync([FromBody] InsertRatingParameters parameters)
         {

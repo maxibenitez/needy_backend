@@ -35,7 +35,6 @@ namespace needy_api.Controllers
         [HttpGet("get-users-by-skill/{skillId}")]
         public async Task<IActionResult> GetUsersBySkillAsync(int skillId)
         {
-            //TODO
             return Ok(await _userLogic.GetUsersBySkillAsync(skillId));
         }
 

@@ -19,7 +19,5 @@
         public Skill? Skill { get; set; }
 
         public double? AvgRating { get; set; }
-
-        public IEnumerable<Rating>? Ratings { get; set; }
     }
 }

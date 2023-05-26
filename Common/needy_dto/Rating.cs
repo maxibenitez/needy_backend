@@ -2,7 +2,13 @@
 {
     public class Rating
     {
-        public User Giver { get; set; }
+        public int Id { get; set; }
+
+        public string GiverCI { get; set; }
+
+        public string ReceiverCI { get; set; }
+
+        public int NeedId { get; set; }
 
         public double Stars { get; set; }
 

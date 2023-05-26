@@ -14,15 +14,17 @@ namespace needy_logic
 
         private readonly IRatingRepository _ratingRepository;
         private readonly IUserLogic _userLogic;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         #endregion
 
         #region Builders
 
-        public RatingLogic(IRatingRepository ratingRepository, IUserLogic userLogic)
+        public RatingLogic(IRatingRepository ratingRepository, IUserLogic userLogic, IHttpContextAccessor httpContextAccessor)
         {
             _ratingRepository = ratingRepository;
             _userLogic = userLogic;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         #endregion
@@ -31,38 +33,39 @@ namespace needy_logic
 
         public async Task<IEnumerable<Rating>> GetUserRatingsAsync(string userCI)
         {
-            List<RatingData> data = (await _ratingRepository.GetUserRatingsAsync(userCI)).ToList();
-            List<Rating> ratings = new List<Rating>();
-
-            foreach (RatingData rating in data)
-            {
-                ratings.Add(await RatingBuilderAsync(rating));
-            }
-
-            return ratings;
+            return await _ratingRepository.GetUserRatingsAsync(userCI);
         }
 
         public async Task<bool> InsertRatingAsync(InsertRatingParameters parameters)
         {
-            //Controlar el user
-            return await _ratingRepository.InsertRatingAsync(parameters);
+            string userCI = await GetUserCIFromToken();
+            
+            return await _ratingRepository.InsertRatingAsync(userCI, parameters);
         }
 
         #endregion
 
         #region Private Methods
 
-        private async Task<Rating> RatingBuilderAsync(RatingData data)
+        private async Task<string> GetUserCIFromToken()
         {
-            var rating = new Rating
+            var httpContext = _httpContextAccessor.HttpContext;
+
+            if (httpContext.Request.Headers.ContainsKey("Authorization"))
             {
-                Stars = data.Stars,
-                Comment = data.Comment,
-            };
+                var authorizationHeader = httpContext.Request.Headers["Authorization"];
+                var token = authorizationHeader.ToString().Replace("Bearer ", string.Empty);
 
-            rating.Giver = await _userLogic.GetUserByCIAsync(data.GiverCI);
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var jwtToken = tokenHandler.ReadJwtToken(token);
 
-            return rating;
+                if (jwtToken.Payload.TryGetValue("CI", out var userCI))
+                {
+                    return userCI.ToString();
+                }
+            }
+
+            return null;
         }
 
         #endregion
