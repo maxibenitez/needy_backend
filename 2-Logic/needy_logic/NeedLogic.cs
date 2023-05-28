@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using needy_dataAccess.Interfaces;
+﻿using needy_dataAccess.Interfaces;
 using needy_dto;
 using needy_logic_abstraction;
 using needy_logic_abstraction.Parameters;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace needy_logic
 {
@@ -13,22 +11,22 @@ namespace needy_logic
 
         private readonly INeedRepository _needRepository;
         private readonly ISkillRepository _skillRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserLogic _userLogic;
+        private readonly ITokenLogic _tokenLogic;
 
         #endregion
 
         #region Builders
 
         public NeedLogic(INeedRepository needRepository, 
-            IHttpContextAccessor httpContextAccessor,
             ISkillRepository skillRepository,
-            IUserLogic userLogic)
+            IUserLogic userLogic,
+            ITokenLogic tokenLogic)
         {
             _needRepository = needRepository;
-            _httpContextAccessor = httpContextAccessor;
             _skillRepository = skillRepository;
             _userLogic = userLogic;
+            _tokenLogic = tokenLogic;
         }
 
         #endregion
@@ -87,7 +85,7 @@ namespace needy_logic
 
         public async Task<bool> InsertNeedAsync(InsertNeedParameters parameters)
         {
-            string userCI = await GetUserCIFromToken();
+            string userCI = await _tokenLogic.GetUserCIFromToken();
 
             return await _needRepository.InsertNeedAsync(userCI, parameters);
         }
@@ -178,27 +176,6 @@ namespace needy_logic
             }
 
             return appliers;
-        }
-
-        private async Task<string> GetUserCIFromToken()
-        {
-            var httpContext = _httpContextAccessor.HttpContext;
-
-            if (httpContext.Request.Headers.ContainsKey("Authorization"))
-            {
-                var authorizationHeader = httpContext.Request.Headers["Authorization"];
-                var token = authorizationHeader.ToString().Replace("Bearer ", string.Empty);
-
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var jwtToken = tokenHandler.ReadJwtToken(token);
-
-                if (jwtToken.Payload.TryGetValue("CI", out var userCI))
-                {
-                    return userCI.ToString();
-                }
-            }
-
-            return null;
         }
 
         #endregion

@@ -2,11 +2,6 @@
 using needy_dto;
 using needy_logic_abstraction;
 using needy_logic_abstraction.Parameters;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.Extensions.Configuration;
 using needy_logic_abstraction.Enumerables;
 
 namespace needy_logic
@@ -16,16 +11,16 @@ namespace needy_logic
         #region Properties and Fields
 
         private readonly IUserRepository _userRepository;
-        private readonly IConfiguration _configuration;
+        private readonly ITokenLogic _tokenLogic;
 
         #endregion
 
         #region Builders
 
-        public AuthLogic(IUserRepository userRepository, IConfiguration configuration)
+        public AuthLogic(IUserRepository userRepository, ITokenLogic tokenLogic)
         {
             _userRepository = userRepository;
-            _configuration = configuration;
+            _tokenLogic = tokenLogic;
         }
 
         #endregion
@@ -43,7 +38,7 @@ namespace needy_logic
 
                 if (result)
                 {
-                    return GenerateJwtToken(user);
+                    return await _tokenLogic.GenerateJwtToken(user);
                 }
 
                 return token;
@@ -80,30 +75,6 @@ namespace needy_logic
         #endregion
 
         #region Private Methods
-
-        private string GenerateJwtToken(UserData user)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim("CI", user.CI),
-                new Claim(ClaimTypes.Name, user.FirstName),
-                new Claim(ClaimTypes.Surname, user.LastName),
-                new Claim(ClaimTypes.Email, user.Email),
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Token"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            var token = new JwtSecurityToken(
-                _configuration["JWT:Issuer"],
-                _configuration["JWT:Audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(60),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
 
         private async Task<bool> CheckCIExists(string userCI)
         {

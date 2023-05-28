@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using needy_dataAccess.Interfaces;
+﻿using needy_dataAccess.Interfaces;
 using needy_dto;
 using needy_logic_abstraction;
 using needy_logic_abstraction.Parameters;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace needy_logic
 {
@@ -12,18 +10,16 @@ namespace needy_logic
         #region Properties and Fields
 
         private readonly IRatingRepository _ratingRepository;
-        private readonly IUserLogic _userLogic;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ITokenLogic _tokenLogic;
 
         #endregion
 
         #region Builders
 
-        public RatingLogic(IRatingRepository ratingRepository, IUserLogic userLogic, IHttpContextAccessor httpContextAccessor)
+        public RatingLogic(IRatingRepository ratingRepository, ITokenLogic tokenLogic)
         {
             _ratingRepository = ratingRepository;
-            _userLogic = userLogic;
-            _httpContextAccessor = httpContextAccessor;
+            _tokenLogic = tokenLogic;
         }
 
         #endregion
@@ -37,34 +33,9 @@ namespace needy_logic
 
         public async Task<bool> InsertRatingAsync(InsertRatingParameters parameters)
         {
-            string userCI = await GetUserCIFromToken();
+            string userCI = await _tokenLogic.GetUserCIFromToken();
             
             return await _ratingRepository.InsertRatingAsync(userCI, parameters);
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        private async Task<string> GetUserCIFromToken()
-        {
-            var httpContext = _httpContextAccessor.HttpContext;
-
-            if (httpContext.Request.Headers.ContainsKey("Authorization"))
-            {
-                var authorizationHeader = httpContext.Request.Headers["Authorization"];
-                var token = authorizationHeader.ToString().Replace("Bearer ", string.Empty);
-
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var jwtToken = tokenHandler.ReadJwtToken(token);
-
-                if (jwtToken.Payload.TryGetValue("CI", out var userCI))
-                {
-                    return userCI.ToString();
-                }
-            }
-
-            return null;
         }
 
         #endregion

@@ -9,11 +9,12 @@ namespace needy_logic_dependency_injection
         public static IServiceCollection AddLogic(this IServiceCollection services)
         {
             return services
-            .AddScoped<IUserLogic, UserLogic>()
             .AddScoped<IAuthLogic, AuthLogic>()
             .AddScoped<INeedLogic, NeedLogic>()
+            .AddScoped<IRatingLogic, RatingLogic>()
             .AddScoped<ISkillLogic, SkillLogic>()
-            .AddScoped<IRatingLogic, RatingLogic>();
+            .AddScoped<ITokenLogic, TokenLogic>()
+            .AddScoped<IUserLogic, UserLogic>();
         }
     }
 }

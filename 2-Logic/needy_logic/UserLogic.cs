@@ -1,10 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using needy_dataAccess.Interfaces;
-using needy_dataAccess.Repositories;
+﻿using needy_dataAccess.Interfaces;
 using needy_dto;
 using needy_logic_abstraction;
-using Npgsql;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace needy_logic
 {
@@ -15,7 +11,7 @@ namespace needy_logic
         private readonly IUserRepository _userRepository;
         private readonly ISkillRepository _skillRepository;
         private readonly IRatingRepository _ratingRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ITokenLogic _tokenLogic;
 
         #endregion
 
@@ -24,12 +20,12 @@ namespace needy_logic
         public UserLogic(IUserRepository userRepository,
             ISkillRepository skillRepository,
             IRatingRepository ratingRepository,
-            IHttpContextAccessor httpContextAccessor)
+            ITokenLogic tokenLogic)
         {
             _userRepository = userRepository;
             _skillRepository = skillRepository;
             _ratingRepository = ratingRepository;
-            _httpContextAccessor = httpContextAccessor;
+            _tokenLogic = tokenLogic;
         }
 
         #endregion
@@ -71,7 +67,7 @@ namespace needy_logic
 
         public async Task<bool> InsertUserSkillAsync(int skillId)
         {
-            string userCI = await GetUserCIFromToken();
+            string userCI = await _tokenLogic.GetUserCIFromToken();
 
             return await _userRepository.InsertUserSkillAsync(userCI, skillId);
         }
@@ -79,27 +75,6 @@ namespace needy_logic
         #endregion
 
         #region Private Methods
-
-        private async Task<string> GetUserCIFromToken()
-        {
-            var httpContext = _httpContextAccessor.HttpContext;
-
-            if (httpContext.Request.Headers.ContainsKey("Authorization"))
-            {
-                var authorizationHeader = httpContext.Request.Headers["Authorization"];
-                var token = authorizationHeader.ToString().Replace("Bearer ", string.Empty);
-
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var jwtToken = tokenHandler.ReadJwtToken(token);
-
-                if (jwtToken.Payload.TryGetValue("CI", out var userCI))
-                {
-                    return userCI.ToString();
-                }
-            }
-
-            return null;
-        }
 
         private async Task<User> UserBuilderAsync(UserData data)
         {
