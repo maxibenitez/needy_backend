@@ -13,6 +13,10 @@ namespace needy_dataAccess.Interfaces
 
         Task<IEnumerable<string>> GetNeedAppliersAsync(int needId);
 
+        Task<string> GetNeedRequestorAsync(int needId);
+
+        Task<string> GetNeedAcceptedApplierAsync(int needId);
+
         Task<bool> InsertNeedAsync(string userCI, InsertNeedParameters parameters);
         
         Task<bool> UpdateNeedAsync(int needId, UpdateNeedParameters parameters);

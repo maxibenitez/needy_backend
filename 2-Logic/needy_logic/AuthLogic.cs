@@ -32,11 +32,9 @@ namespace needy_logic
             UserData user = await _userRepository.GetUserByEmailAsync(parameters.Email);
             string token = "";
 
-            if (user != null)
+            if (user is not null)
             {
-                var result = BCrypt.Net.BCrypt.Verify(parameters.Password, user.Password);
-
-                if (result)
+                if (BCrypt.Net.BCrypt.Verify(parameters.Password, user.Password))
                 {
                     return await _tokenLogic.GenerateJwtToken(user);
                 }
@@ -49,12 +47,12 @@ namespace needy_logic
 
         public async Task<RegisterStatus> RegisterAsync(RegisterParameters parameters)
         {
-            if (await CheckCIExists(parameters.CI))
+            if (await IsDuplicateCI(parameters.CI))
             {
                 return RegisterStatus.UserAlreadyExist;
             }
 
-            if (await CheckEmailExists(parameters.Email))
+            if (await IsDuplicateEmail(parameters.Email))
             {
                 return RegisterStatus.EmailAlreadyExist;
             }
@@ -62,9 +60,7 @@ namespace needy_logic
             var hashpwd = BCrypt.Net.BCrypt.HashPassword(parameters.Password);
             parameters.Password = hashpwd;
 
-            var result = await _userRepository.InsertUserAsync(parameters);
-
-            if (result)
+            if (await _userRepository.InsertUserAsync(parameters))
             {
                 return RegisterStatus.Success;
             }
@@ -76,14 +72,14 @@ namespace needy_logic
 
         #region Private Methods
 
-        private async Task<bool> CheckCIExists(string userCI)
+        private async Task<bool> IsDuplicateCI(string userCI)
         {
             UserData user = await _userRepository.GetUserByCIAsync(userCI);
 
             return user is not null ? true : false;
         }
 
-        private async Task<bool> CheckEmailExists(string email)
+        private async Task<bool> IsDuplicateEmail(string email)
         {
             UserData user = await _userRepository.GetUserByEmailAsync(email);
 

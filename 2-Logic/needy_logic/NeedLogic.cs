@@ -104,14 +104,14 @@ namespace needy_logic
 
         public async Task<bool> ApplyNeedAsync(int needId)
         {
-            string applierCI = await GetUserCIFromToken();
+            string applierCI = await _tokenLogic.GetUserCIFromToken();
 
             return await _needRepository.ApplyNeedAsync(needId, applierCI);
         }
 
         public async Task<bool> UnapplyNeedAsync(int needId)
         {
-            string applierCI = await GetUserCIFromToken();
+            string applierCI = await _tokenLogic.GetUserCIFromToken();
 
             return await _needRepository.DeleteNeedApplierAsync(needId, applierCI);
         }

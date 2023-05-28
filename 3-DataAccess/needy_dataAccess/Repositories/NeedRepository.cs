@@ -132,6 +132,68 @@ namespace needy_dataAccess.Repositories
             }
         }
 
+        public async Task<string> GetNeedRequestorAsync(int needId)
+        {
+            using (var connection = _dbConnection.CreateConnection())
+            {
+                await connection.OpenAsync();
+
+                var query = @"
+                            SELECT ""RequestorCI""
+                            FROM public.""Need""
+                            WHERE ""Id"" = @NeedId";
+
+                var command = new NpgsqlCommand(query, connection);
+                command.Parameters.AddWithValue("@NeedId", needId);
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    string requestorCI = null;
+
+                    if (await reader.ReadAsync())
+                    {
+                        if (!reader.IsDBNull(0))
+                        {
+                            requestorCI = reader.GetString(0);
+                        }
+                    }
+
+                    return requestorCI;
+                }
+            }
+        }
+
+        public async Task<string> GetNeedAcceptedApplierAsync(int needId)
+        {
+            using (var connection = _dbConnection.CreateConnection())
+            {
+                await connection.OpenAsync();
+
+                var query = @"
+                            SELECT ""AcceptedApplierCI""
+                            FROM public.""Need""
+                            WHERE ""Id"" = @NeedId";
+
+                var command = new NpgsqlCommand(query, connection);
+                command.Parameters.AddWithValue("@NeedId", needId);
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    string acceptedApplierCI = null;
+
+                    if (await reader.ReadAsync())
+                    {
+                        if (!reader.IsDBNull(0))
+                        {
+                            acceptedApplierCI = reader.GetString(0);
+                        }
+                    }
+
+                    return acceptedApplierCI;
+                }
+            }
+        }
+
         public async Task<bool> InsertNeedAsync(string userCI, InsertNeedParameters parameters)
         {
             using (var connection = _dbConnection.CreateConnection())
