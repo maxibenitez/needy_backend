@@ -25,7 +25,7 @@ namespace needy_logic
         {
             _needRepository = needRepository;
             _skillRepository = skillRepository;
-            _userLogic = userLogic;
+            //_userLogic = userLogic;
             _tokenLogic = tokenLogic;
         }
 

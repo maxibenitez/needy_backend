@@ -18,7 +18,9 @@ namespace needy_logic
 
         #region Builders
 
-        public RatingLogic(IRatingRepository ratingRepository, INeedRepository needRepository, ITokenLogic tokenLogic)
+        public RatingLogic(IRatingRepository ratingRepository, 
+            INeedRepository needRepository, 
+            ITokenLogic tokenLogic)
         {
             _ratingRepository = ratingRepository;
             _needRepository = needRepository;
@@ -36,17 +38,12 @@ namespace needy_logic
 
         public async Task<bool> InsertRatingAsync(InsertRatingParameters parameters)
         {
+            string userCI = await _tokenLogic.GetUserCIFromToken();
+
             if (await IsAcceptedApplier(parameters.NeedId, parameters.ReceiverCI) &&
-                await IsNeedExists(parameters.NeedId))
+                await IsRequestor(parameters.NeedId, userCI))
             {
-                string userCI = await _tokenLogic.GetUserCIFromToken();
-
-                if(await IsRequestor(parameters.NeedId, userCI))
-                {
-                    return await _ratingRepository.InsertRatingAsync(userCI, parameters);
-                }
-
-                return false;
+                return await _ratingRepository.InsertRatingAsync(userCI, parameters);
             }
 
             return false;
@@ -66,13 +63,6 @@ namespace needy_logic
             }
 
             return false;
-        }
-
-        private async Task<bool> IsNeedExists(int needId)
-        {
-            NeedData need = await _needRepository.GetNeedByIdAsync(needId);
-
-            return need is not null ? true : false;
         }
 
         private async Task<bool> IsRequestor(int needId, string giverCI)
