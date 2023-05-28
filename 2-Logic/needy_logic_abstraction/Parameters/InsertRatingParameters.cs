@@ -8,12 +8,14 @@ namespace needy_logic_abstraction.Parameters
         public int NeedId { get; set; }
 
         [Required]
+        [StringLength(8)]
+        [RegularExpression("^[0-9]+$")]
         public string ReceiverCI { get; set; }
 
-        [Range(0.5, 5.0, ErrorMessage = "Calificación debe estar entre 0.5 y 5")]
-        public decimal Stars { get; set; }
+        [Range(0.5, 5.0, ErrorMessage = "La calificación debe estar entre 0.5 y 5")]
+        public double Stars { get; set; }
 
-        [StringLength(150, ErrorMessage = "Comentario no debe superar los 150 caracteres")]
+        [StringLength(150, ErrorMessage = "El comentario no debe superar los 150 caracteres")]
         public string? Comment { get; set; }
     }
 }

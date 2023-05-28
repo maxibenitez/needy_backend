@@ -4,14 +4,14 @@ namespace needy_logic_abstraction.Parameters
 {
     public class InsertNeedParameters : IValidatableObject
     {
-        [StringLength(150, ErrorMessage = "Descripción no debe superar los 150 caracteres")]
+        [StringLength(150, ErrorMessage = "La descripción no debe superar los 150 caracteres")]
         public string? Description { get; set; }
 
-        [Required(ErrorMessage = "Fecha de necesidad es requerida")]
+        [Required(ErrorMessage = "La fecha de ayuda es requerida")]
         [DataType(DataType.Date)]
         public DateTime NeedDate { get; set; }
 
-        [Required(ErrorMessage = "Habilidad solicitada requerida")]
+        [Required(ErrorMessage = "La habilidad solicitada requerida")]
         [Range(1, int.MaxValue)]
         public int RequestedSkillId { get; set; }
 
@@ -19,7 +19,7 @@ namespace needy_logic_abstraction.Parameters
         {
             if (NeedDate <= DateTime.Today)
             {
-                yield return new ValidationResult("Fecha de necesidad debe ser mayor a la fecha de hoy");
+                yield return new ValidationResult("La fecha de ayuda debe ser mayor a la fecha de hoy");
             }
         }
     }
