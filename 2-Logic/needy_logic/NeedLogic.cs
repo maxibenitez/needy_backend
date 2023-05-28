@@ -25,7 +25,7 @@ namespace needy_logic
         {
             _needRepository = needRepository;
             _skillRepository = skillRepository;
-            //_userLogic = userLogic;
+            _userLogic = userLogic;
             _tokenLogic = tokenLogic;
         }
 
@@ -118,12 +118,16 @@ namespace needy_logic
 
         public async Task<bool> AcceptApplierAsync(int needId, string applierCI)
         {
-            //chequear que el usuario esté aplicado en la need
-            var result = await _needRepository.AcceptApplierAsync(needId, applierCI);
+            var appliersCI = await _needRepository.GetNeedAppliersAsync(needId);
 
-            ChangeStatusAsync(needId, "Aceptada");
+            if(appliersCI.Contains(applierCI))
+            {
+                ChangeStatusAsync(needId, "Aceptada");
 
-            return result;
+                return await _needRepository.AcceptApplierAsync(needId, applierCI);
+            }
+
+            return false;
         }
 
         public async Task<bool> DeclineApplierAsync(int needId, string applierCI)

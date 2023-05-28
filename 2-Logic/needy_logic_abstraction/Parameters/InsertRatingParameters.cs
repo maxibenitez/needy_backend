@@ -16,6 +16,6 @@ namespace needy_logic_abstraction.Parameters
         public double Stars { get; set; }
 
         [StringLength(150, ErrorMessage = "El comentario no debe superar los 150 caracteres")]
-        public string? Comment { get; set; }
+        public string Comment { get; set; }
     }
 }

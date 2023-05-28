@@ -5,7 +5,7 @@ namespace needy_logic_abstraction.Parameters
     public class UpdateNeedParameters : IValidatableObject
     {
         [StringLength(150, ErrorMessage = "Descripción no debe superar los 150 caracteres")]
-        public string? Description { get; set; }
+        public string Description { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime NeedDate { get; set; }
