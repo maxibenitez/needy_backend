@@ -73,13 +73,13 @@ namespace needy_api.Controllers
             return await _needLogic.DeleteNeedAsync(needId) ? Ok() : BadRequest();
         }
 
-        [HttpPut("apply-need/{needId}")]
+        [HttpPost("apply-need/{needId}")]
         public async Task<IActionResult> ApplyNeedAsync(int needId)
         {
             return await _needLogic.ApplyNeedAsync(needId) ? Ok() : BadRequest();
         }
 
-        [HttpPut("unapply-need/{needId}")]
+        [HttpDelete("unapply-need/{needId}")]
         public async Task<IActionResult> UnapplyNeedAsync(int needId)
         {
             return await _needLogic.UnapplyNeedAsync(needId) ? Ok() : BadRequest();

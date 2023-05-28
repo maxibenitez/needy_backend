@@ -54,16 +54,12 @@ namespace needy_logic
 
         public async Task<RegisterStatus> RegisterAsync(RegisterParameters parameters)
         {
-            UserData userCI = await _userRepository.GetUserByCIAsync(parameters.CI);
-
-            if (userCI is not null)
+            if (await CheckCIExists(parameters.CI))
             {
                 return RegisterStatus.UserAlreadyExist;
             }
 
-            UserData userEmail = await _userRepository.GetUserByEmailAsync(parameters.Email);
-
-            if (userEmail is not null)
+            if (await CheckEmailExists(parameters.Email))
             {
                 return RegisterStatus.EmailAlreadyExist;
             }
@@ -107,6 +103,20 @@ namespace needy_logic
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private async Task<bool> CheckCIExists(string userCI)
+        {
+            UserData user = await _userRepository.GetUserByCIAsync(userCI);
+
+            return user is not null ? true : false;
+        }
+
+        private async Task<bool> CheckEmailExists(string email)
+        {
+            UserData user = await _userRepository.GetUserByEmailAsync(email);
+
+            return user is not null ? true : false;
         }
 
         #endregion
