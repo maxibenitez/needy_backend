@@ -56,45 +56,70 @@ namespace needy_api.Controllers
             return await _needLogic.InsertNeedAsync(parameters) ? Ok() : BadRequest();
         }
 
-        [HttpPut("update-need/{needId}")]
-        public async Task<IActionResult> UpdateNeedAsync(int needId, [FromBody] UpdateNeedParameters parameters)
+        [HttpPut("update-need")]
+        public async Task<IActionResult> UpdateNeedAsync([FromBody] UpdateNeedParameters parameters)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState.Values);
             }
 
-            return await _needLogic.UpdateNeedAsync(needId, parameters) ? Ok() : BadRequest();
+            return await _needLogic.UpdateNeedAsync(parameters) ? Ok() : BadRequest();
         }
 
-        [HttpDelete("delete-need/{needId}")]
-        public async Task<IActionResult> DeleteNeedAsync(int needId)
+        [HttpDelete("delete-need")]
+        public async Task<IActionResult> DeleteNeedAsync([FromBody] int needId)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+
             return await _needLogic.DeleteNeedAsync(needId) ? Ok() : BadRequest();
         }
 
-        [HttpPost("apply-need/{needId}")]
-        public async Task<IActionResult> ApplyNeedAsync(int needId)
+        [HttpPost("apply-need")]
+        public async Task<IActionResult> ApplyNeedAsync([FromBody] int needId)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+
             return await _needLogic.ApplyNeedAsync(needId) ? Ok() : BadRequest();
         }
 
-        [HttpDelete("unapply-need/{needId}")]
-        public async Task<IActionResult> UnapplyNeedAsync(int needId)
+        [HttpDelete("unapply-need")]
+        public async Task<IActionResult> UnapplyNeedAsync([FromBody] int needId)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+
             return await _needLogic.UnapplyNeedAsync(needId) ? Ok() : BadRequest();
         }
 
-        [HttpPut("accept-applier/{needId}")]
-        public async Task<IActionResult> AcceptApplierAsync(int needId, [FromBody] string applierCi)
+        [HttpPut("accept-applier")]
+        public async Task<IActionResult> AcceptApplierAsync([FromBody] ManageApplierParameters parameters)
         {
-            return await _needLogic.AcceptApplierAsync(needId, applierCi) ? Ok() : BadRequest();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+
+            return await _needLogic.AcceptApplierAsync(parameters) ? Ok() : BadRequest();
         }
 
-        [HttpDelete("decline-applier/{needId}")]
-        public async Task<IActionResult> DeclineApplierAsync(int needId, [FromBody] string applierCi)
+        [HttpDelete("decline-applier")]
+        public async Task<IActionResult> DeclineApplierAsync([FromBody] ManageApplierParameters parameters)
         {
-            return await _needLogic.DeclineApplierAsync(needId, applierCi) ? Ok() : BadRequest();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+
+            return await _needLogic.DeclineApplierAsync(parameters) ? Ok() : BadRequest();
         }
 
         #endregion

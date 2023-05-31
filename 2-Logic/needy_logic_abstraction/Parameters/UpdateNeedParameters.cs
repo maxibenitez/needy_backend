@@ -4,9 +4,15 @@ namespace needy_logic_abstraction.Parameters
 {
     public class UpdateNeedParameters : IValidatableObject
     {
+        [Required]
+        [Range(1, int.MaxValue)]
+        public int NeedId { get; set; }
+
+        [Required]
         [StringLength(150, ErrorMessage = "Descripción no debe superar los 150 caracteres")]
         public string Description { get; set; }
 
+        [Required]
         [DataType(DataType.Date)]
         public DateTime NeedDate { get; set; }
 

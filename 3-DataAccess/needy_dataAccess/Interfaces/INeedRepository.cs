@@ -19,7 +19,7 @@ namespace needy_dataAccess.Interfaces
 
         Task<bool> InsertNeedAsync(string userCI, InsertNeedParameters parameters);
         
-        Task<bool> UpdateNeedAsync(int needId, UpdateNeedParameters parameters);
+        Task<bool> UpdateNeedAsync(UpdateNeedParameters parameters);
         
         Task<bool> DeleteNeedAsync(int needId);
 
@@ -29,7 +29,7 @@ namespace needy_dataAccess.Interfaces
 
         Task<bool> DeleteNeedApplierAsync(int needId, string applierCi);
 
-        Task<bool> AcceptApplierAsync(int needId, string applierCI);
+        Task<bool> AcceptApplierAsync(ManageApplierParameters parameters);
 
         Task<bool> ChangeStatusAsync(int needId, string status);
     }

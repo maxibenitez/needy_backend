@@ -41,6 +41,11 @@ namespace needy_api.Controllers
         [HttpGet("get-user-by-ci")]
         public async Task<IActionResult> GetUserByCIAsync([FromBody] string userCI)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+
             return Ok(await _userLogic.GetUserByCIAsync(userCI));
         }
 
@@ -52,9 +57,7 @@ namespace needy_api.Controllers
                 return BadRequest(ModelState.Values);
             }
 
-            var result = await _userLogic.InsertUserSkillAsync(skillId);
-
-            return result ? Ok(result) : BadRequest();
+            return await _userLogic.InsertUserSkillAsync(skillId) ? Ok() : BadRequest();
         }
 
         #endregion

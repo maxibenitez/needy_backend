@@ -219,7 +219,7 @@ namespace needy_dataAccess.Repositories
             }
         }
 
-        public async Task<bool> UpdateNeedAsync(int needId, UpdateNeedParameters parameters)
+        public async Task<bool> UpdateNeedAsync(UpdateNeedParameters parameters)
         {
             using (var connection = _dbConnection.CreateConnection())
             {
@@ -233,7 +233,7 @@ namespace needy_dataAccess.Repositories
                         WHERE ""Id"" = @NeedId";
 
                 var command = new NpgsqlCommand(query, connection);
-                command.Parameters.AddWithValue("@NeedId", needId);
+                command.Parameters.AddWithValue("@NeedId", parameters.NeedId);
                 command.Parameters.AddWithValue("@Description", parameters.Description);
                 command.Parameters.AddWithValue("@NeedDate", parameters.NeedDate);
                 command.Parameters.AddWithValue("@RequestedSkillId", parameters.RequestedSkillId);
@@ -325,7 +325,7 @@ namespace needy_dataAccess.Repositories
             }
         }
 
-        public async Task<bool> AcceptApplierAsync(int needId, string applierCI)
+        public async Task<bool> AcceptApplierAsync(ManageApplierParameters parameters)
         {
             using (var connection = _dbConnection.CreateConnection())
             {
@@ -338,8 +338,8 @@ namespace needy_dataAccess.Repositories
                         WHERE ""Id"" = @NeedId;";
 
                 var command = new NpgsqlCommand(query, connection);
-                command.Parameters.AddWithValue("@NeedId", needId);
-                command.Parameters.AddWithValue("@AcceptedApplierCI", applierCI);
+                command.Parameters.AddWithValue("@NeedId", parameters.NeedId);
+                command.Parameters.AddWithValue("@AcceptedApplierCI", parameters.ApplierCI);
                 command.Parameters.AddWithValue("@AcceptedDate", DateTime.Now);
 
                 var result = await command.ExecuteNonQueryAsync();

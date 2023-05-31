@@ -13,7 +13,7 @@ namespace needy_logic_abstraction
 
         Task<bool> InsertNeedAsync(InsertNeedParameters parameters);
         
-        Task<bool> UpdateNeedAsync(int needId, UpdateNeedParameters parameters);
+        Task<bool> UpdateNeedAsync(UpdateNeedParameters parameters);
         
         Task<bool> DeleteNeedAsync(int needId);
 
@@ -21,8 +21,8 @@ namespace needy_logic_abstraction
 
         Task<bool> UnapplyNeedAsync(int needId);
 
-        Task<bool> AcceptApplierAsync(int needId, string applierCi);
+        Task<bool> AcceptApplierAsync(ManageApplierParameters parameters);
 
-        Task<bool> DeclineApplierAsync(int needId, string applierCi);
+        Task<bool> DeclineApplierAsync(ManageApplierParameters parameters);
     }
 }

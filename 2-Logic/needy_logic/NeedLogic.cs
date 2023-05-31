@@ -90,9 +90,9 @@ namespace needy_logic
             return await _needRepository.InsertNeedAsync(userCI, parameters);
         }
 
-        public async Task<bool> UpdateNeedAsync(int needId, UpdateNeedParameters parameters)
+        public async Task<bool> UpdateNeedAsync(UpdateNeedParameters parameters)
         {
-            return await _needRepository.UpdateNeedAsync(needId, parameters);
+            return await _needRepository.UpdateNeedAsync(parameters);
         }
 
         public async Task<bool> DeleteNeedAsync(int needId)
@@ -116,23 +116,23 @@ namespace needy_logic
             return await _needRepository.DeleteNeedApplierAsync(needId, applierCI);
         }
 
-        public async Task<bool> AcceptApplierAsync(int needId, string applierCI)
+        public async Task<bool> AcceptApplierAsync(ManageApplierParameters parameters)
         {
-            var appliersCI = await _needRepository.GetNeedAppliersAsync(needId);
+            var appliersCI = await _needRepository.GetNeedAppliersAsync(parameters.NeedId);
 
-            if(appliersCI.Contains(applierCI))
+            if(appliersCI.Contains(parameters.ApplierCI))
             {
-                ChangeStatusAsync(needId, "Aceptada");
+                ChangeStatusAsync(parameters.NeedId, "Aceptada");
 
-                return await _needRepository.AcceptApplierAsync(needId, applierCI);
+                return await _needRepository.AcceptApplierAsync(parameters);
             }
 
             return false;
         }
 
-        public async Task<bool> DeclineApplierAsync(int needId, string applierCI)
+        public async Task<bool> DeclineApplierAsync(ManageApplierParameters parameters)
         {
-            return await _needRepository.DeleteNeedApplierAsync(needId, applierCI);
+            return await _needRepository.DeleteNeedApplierAsync(parameters.NeedId, parameters.ApplierCI);
         }
 
         #endregion
