@@ -12,9 +12,11 @@ namespace needy_logic_abstraction.Parameters
         [RegularExpression("^[0-9]+$")]
         public string ReceiverCI { get; set; }
 
-        [Range(0.5, 5.0, ErrorMessage = "La calificación debe estar entre 0.5 y 5")]
+        [Required(ErrorMessage = "La calificación es requerida")]
+        [Range(1.0, 5.0, ErrorMessage = "La calificación debe estar entre 1 y 5")]
         public double Stars { get; set; }
 
+        [Required(ErrorMessage = "El comentario es requerido")]
         [StringLength(150, ErrorMessage = "El comentario no debe superar los 150 caracteres")]
         public string Comment { get; set; }
     }

@@ -54,15 +54,15 @@ namespace needy_api.Controllers
                 return BadRequest(ModelState.Values);
             }
 
-            RegisterStatus status = await _authorizationLogic.RegisterAsync(parameters);
+            ErrorStatus status = await _authorizationLogic.RegisterAsync(parameters);
 
             switch (status)
             {
-                case RegisterStatus.Success:
+                case ErrorStatus.Success:
                     return Ok("Registro exitoso");
-                case RegisterStatus.UserAlreadyExist:
+                case ErrorStatus.UserAlreadyExist:
                     return BadRequest("Ya existe un usuario registrado con esa CI");
-                case RegisterStatus.EmailAlreadyExist:
+                case ErrorStatus.EmailAlreadyExist:
                     return BadRequest("Ya existe un usuario registrado con ese email");
                 default:
                     return StatusCode((int)HttpStatusCode.InternalServerError, "Ha ocurrido un error");

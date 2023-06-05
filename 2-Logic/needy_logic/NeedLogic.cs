@@ -1,4 +1,6 @@
-﻿using needy_dataAccess.Interfaces;
+﻿using Microsoft.IdentityModel.Tokens;
+using needy_dataAccess.Interfaces;
+using needy_dataAccess.Repositories;
 using needy_dto;
 using needy_logic_abstraction;
 using needy_logic_abstraction.Parameters;
@@ -118,13 +120,16 @@ namespace needy_logic
 
         public async Task<bool> AcceptApplierAsync(ManageApplierParameters parameters)
         {
-            var appliersCI = await _needRepository.GetNeedAppliersAsync(parameters.NeedId);
-
-            if(appliersCI.Contains(parameters.ApplierCI))
+            if(!await ExistAcceptedApplierAsync(parameters.NeedId))
             {
-                ChangeStatusAsync(parameters.NeedId, "Aceptada");
+                var appliersCI = await _needRepository.GetNeedAppliersAsync(parameters.NeedId);
 
-                return await _needRepository.AcceptApplierAsync(parameters);
+                if(appliersCI.Contains(parameters.ApplierCI))
+                {
+                    await ChangeStatusAsync(parameters.NeedId, "Aceptada");
+
+                    return await _needRepository.AcceptApplierAsync(parameters);
+                }
             }
 
             return false;
@@ -180,6 +185,13 @@ namespace needy_logic
             }
 
             return appliers;
+        }
+
+        private async Task<bool> ExistAcceptedApplierAsync(int needId)
+        {
+            string acceptedApplierCI = await _needRepository.GetNeedAcceptedApplierAsync(needId);
+
+            return acceptedApplierCI.IsNullOrEmpty() ? false : true;
         }
 
         #endregion

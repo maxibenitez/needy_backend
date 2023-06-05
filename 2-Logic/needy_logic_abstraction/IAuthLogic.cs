@@ -7,6 +7,6 @@ namespace needy_logic_abstraction
     {
         Task<string> LoginAsync(LoginParameters parameters);
 
-        Task<RegisterStatus> RegisterAsync(RegisterParameters parameters);
+        Task<ErrorStatus> RegisterAsync(RegisterParameters parameters);
     }
 }

@@ -45,16 +45,16 @@ namespace needy_logic
             return token;
         }
 
-        public async Task<RegisterStatus> RegisterAsync(RegisterParameters parameters)
+        public async Task<ErrorStatus> RegisterAsync(RegisterParameters parameters)
         {
             if (await IsDuplicateCI(parameters.CI))
             {
-                return RegisterStatus.UserAlreadyExist;
+                return ErrorStatus.UserAlreadyExist;
             }
 
             if (await IsDuplicateEmail(parameters.Email))
             {
-                return RegisterStatus.EmailAlreadyExist;
+                return ErrorStatus.EmailAlreadyExist;
             }
 
             var hashpwd = BCrypt.Net.BCrypt.HashPassword(parameters.Password);
@@ -62,10 +62,10 @@ namespace needy_logic
 
             if (await _userRepository.InsertUserAsync(parameters))
             {
-                return RegisterStatus.Success;
+                return ErrorStatus.Success;
             }
 
-            return RegisterStatus.InternalServerError;
+            return ErrorStatus.InternalServerError;
         }
 
         #endregion

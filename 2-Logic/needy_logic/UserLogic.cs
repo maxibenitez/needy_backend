@@ -86,7 +86,7 @@ namespace needy_logic
                 Address = data.Address,
                 Zone = data.Zone,
                 Phone = data.Phone,
-                BirthDate = data.BirthDate,
+                Age = await GetUserAgeAsync(data.BirthDate),
             };
 
             if(data.SkillId is not null)
@@ -102,6 +102,19 @@ namespace needy_logic
             }
 
             return user;
+        }
+
+        private async Task<int> GetUserAgeAsync(DateTime birthDate)
+        {
+            var today = DateTime.Today;
+            var age = today.Year - birthDate.Year;
+
+            if (birthDate.Date > today.AddYears(-age))
+            {
+                age--;
+            }
+
+            return age;
         }
 
 

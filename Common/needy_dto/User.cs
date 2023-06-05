@@ -14,7 +14,7 @@
 
         public string Phone { get; set; }
 
-        public DateTime BirthDate { get; set; }
+        public int Age { get; set; }
 
         public Skill? Skill { get; set; }
 
