@@ -35,6 +35,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddRepository();
 builder.Services.AddLogic();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -44,6 +45,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(options =>
+{
+    options.AllowAnyOrigin();
+    options.AllowAnyMethod();
+    options.AllowAnyHeader();
+});
 
 app.UseHttpsRedirection();
 
