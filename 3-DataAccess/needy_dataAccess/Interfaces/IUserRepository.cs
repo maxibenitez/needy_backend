@@ -18,5 +18,9 @@ namespace needy_dataAccess.Interfaces
         Task<bool> InsertUserAsync(RegisterParameters parameters);
 
         Task<bool> InsertUserSkillAsync(string userCI, int skillId);
+
+        Task<bool> UpdateUserAsync(string userCI, UpdateUserParameters parameters);
+
+        Task<bool> DeleteUserSkillsAsync(string userCI);
     }
 }

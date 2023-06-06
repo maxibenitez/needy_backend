@@ -208,6 +208,61 @@ namespace needy_dataAccess.Repositories
             }
         }
 
+        public async Task<bool> UpdateUserAsync(string userCI, UpdateUserParameters parameters)
+        {
+            using (var connection = _dbConnection.CreateConnection())
+            {
+                await connection.OpenAsync();
+
+                var query = @"
+                        UPDATE public.""User""
+                        SET ""FirstName"" = @FirstName,
+                            ""LastName"" = @LastName,
+                            ""Address"" = @Address,
+                            ""Zone"" = @Zone,
+                            ""Phone"" = @Phone,
+                            ""Gender"" = @Gender,
+                            ""BirthDate"" = @BirthDate,
+                            ""AboutMe"" = @AboutMe
+                        WHERE ""CI"" = @CI";
+
+                var command = new NpgsqlCommand(query, connection);
+                command.Parameters.AddWithValue("@CI", userCI);
+                command.Parameters.AddWithValue("@FirstName", parameters.FirstName);
+                command.Parameters.AddWithValue("@LastName", parameters.LastName);
+                command.Parameters.AddWithValue("@Address", parameters.Address);
+                command.Parameters.AddWithValue("@Zone", parameters.Zone);
+                command.Parameters.AddWithValue("@Phone", parameters.Phone);
+                command.Parameters.AddWithValue("@Gender", parameters.Gender);
+                command.Parameters.AddWithValue("@BirthDate", parameters.BirthDate);
+                command.Parameters.AddWithValue("@AboutMe", parameters.AboutMe);
+
+                var result = await command.ExecuteNonQueryAsync();
+
+                return result > 0;
+            }
+        }
+
+        public async Task<bool> DeleteUserSkillsAsync(string userCI)
+        {
+            using (var connection = _dbConnection.CreateConnection())
+            {
+                await connection.OpenAsync();
+
+                var query = @"
+                            DELETE
+                            FROM public.""UserSkill""
+                            WHERE ""UserCI"" = @UserCI";
+
+                var command = new NpgsqlCommand(query, connection);
+                command.Parameters.AddWithValue("@UserCI", userCI);
+
+                var result = await command.ExecuteNonQueryAsync();
+
+                return result > 0;
+            }
+        }
+
         #endregion
 
         #region Private Methods

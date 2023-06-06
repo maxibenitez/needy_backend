@@ -22,6 +22,6 @@
 
         public string Password { get; set; }
 
-        public string? AboutMe { get; set; }
+        public string AboutMe { get; set; }
     }
 }

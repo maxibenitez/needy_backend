@@ -4,6 +4,7 @@
     {
         Success,
         UserAlreadyExist,
+        UserNotExist,
         EmailAlreadyExist,
         AcceptedApllierExist,
         BadRequest,

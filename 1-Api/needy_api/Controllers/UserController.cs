@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using needy_logic;
 using needy_logic_abstraction;
+using needy_logic_abstraction.Parameters;
 
 namespace needy_api.Controllers
 {
@@ -49,8 +51,8 @@ namespace needy_api.Controllers
             return Ok(await _userLogic.GetUserByCIAsync(userCI));
         }
 
-        [HttpPost("insert-user-skill")]
-        public async Task<IActionResult> InsertUserSkillAsync([FromBody] List<int> skillsId)
+        [HttpPost("insert-user-skills")]
+        public async Task<IActionResult> InsertUserSkillsAsync([FromBody] List<int> skillsId)
         {
             if (!ModelState.IsValid)
             {
@@ -58,6 +60,30 @@ namespace needy_api.Controllers
             }
 
             await _userLogic.InsertUserSkillsAsync(skillsId);
+
+            return Ok();
+        }
+
+        [HttpPut("update-user")]
+        public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserParameters parameters)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+
+            return await _userLogic.UpdateUserAsync(parameters) ? Ok() : BadRequest();
+        }
+
+        [HttpPut("update-user-skills")]
+        public async Task<IActionResult> UpdateUserSkillsAsync([FromBody] List<int> skillsId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+
+            await _userLogic.UpdateUserSkillsAsync(skillsId);
 
             return Ok();
         }

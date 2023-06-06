@@ -1,6 +1,8 @@
 ﻿using needy_dataAccess.Interfaces;
+using needy_dataAccess.Repositories;
 using needy_dto;
 using needy_logic_abstraction;
+using needy_logic_abstraction.Parameters;
 
 namespace needy_logic
 {
@@ -70,6 +72,22 @@ namespace needy_logic
             {
                 await _userRepository.InsertUserSkillAsync(userCI, skillId);
             }
+        }
+
+        public async Task<bool> UpdateUserAsync(UpdateUserParameters parameters)
+        {
+            string userCI = await _tokenLogic.GetUserCIFromToken();
+
+            return await _userRepository.UpdateUserAsync(userCI, parameters);
+        }
+
+        public async Task UpdateUserSkillsAsync(List<int> skillsId)
+        {
+            string userCI = await _tokenLogic.GetUserCIFromToken();
+
+            await _userRepository.DeleteUserSkillsAsync(userCI);
+
+            await InsertUserSkillsAsync(skillsId);
         }
 
         #endregion
