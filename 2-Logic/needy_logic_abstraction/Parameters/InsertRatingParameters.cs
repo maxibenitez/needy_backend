@@ -14,6 +14,7 @@ namespace needy_logic_abstraction.Parameters
 
         [Required(ErrorMessage = "La calificación es requerida")]
         [Range(1.0, 5.0, ErrorMessage = "La calificación debe estar entre 1 y 5")]
+        [RegularExpression(@"^([1-5](\.[05])?)$")]
         public double Stars { get; set; }
 
         [Required(ErrorMessage = "El comentario es requerido")]

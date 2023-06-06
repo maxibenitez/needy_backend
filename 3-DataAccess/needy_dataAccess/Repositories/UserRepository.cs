@@ -130,6 +130,35 @@ namespace needy_dataAccess.Repositories
             }
         }
 
+        public async Task<IEnumerable<Skill>> GetUserSkillsAsync(string userCI)
+        {
+            using (var connection = _dbConnection.CreateConnection())
+            {
+                await connection.OpenAsync();
+
+                var query = @"
+                            SELECT s.""Id"", s.""Name""
+                            FROM public.""UserSkill"" u
+                            INNER JOIN public.""Skill"" s ON u.""SkillId"" = s.""Id""
+                            WHERE u.""UserCI"" = @UserCI";
+
+                var command = new NpgsqlCommand(query, connection);
+                command.Parameters.AddWithValue("@UserCI", userCI);
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    var skills = new List<Skill>();
+
+                    while (await reader.ReadAsync())
+                    {
+                        skills.Add(await SkillBuilderAsync(reader));
+                    }
+
+                    return skills;
+                }
+            }
+        }
+
         public async Task<bool> InsertUserAsync(RegisterParameters parameters)
         {
             using (var connection = _dbConnection.CreateConnection())
@@ -166,12 +195,11 @@ namespace needy_dataAccess.Repositories
                 await connection.OpenAsync();
 
                 var query = @"
-                        UPDATE public.""User""
-                        SET ""SkillId"" = @SkillId
-                        WHERE ""CI"" = @CI";
+                        INSERT INTO public.""UserSkill"" (""SkillId"", ""UserCI"")
+                        VALUES (@SkillId, @UserCI)";
 
                 var command = new NpgsqlCommand(query, connection);
-                command.Parameters.AddWithValue("@CI", userCI);
+                command.Parameters.AddWithValue("@UserCI", userCI);
                 command.Parameters.AddWithValue("@SkillId", skillId);
 
                 var result = await command.ExecuteNonQueryAsync();
@@ -198,10 +226,21 @@ namespace needy_dataAccess.Repositories
                 BirthDate = (DateTime)reader["BirthDate"],
                 Email = (string)reader["Email"],
                 Password = (string)reader["Password"],
-                SkillId = reader.IsDBNull(reader.GetOrdinal("SkillId")) ? null : (int?)reader["SkillId"],
+                AboutMe = reader.IsDBNull(reader.GetOrdinal("AboutMe")) ? null : (string?)reader["AboutMe"],
             };
 
             return user;
+        }
+
+        private async Task<Skill> SkillBuilderAsync(NpgsqlDataReader reader)
+        {
+            var skill = new Skill
+            {
+                Id = (int)reader["Id"],
+                Name = (string)reader["Name"],
+            };
+
+            return skill;
         }
 
         #endregion

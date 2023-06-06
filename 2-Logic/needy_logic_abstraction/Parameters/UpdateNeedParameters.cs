@@ -12,6 +12,13 @@ namespace needy_logic_abstraction.Parameters
         [StringLength(150, ErrorMessage = "Descripción no debe superar los 150 caracteres")]
         public string Description { get; set; }
 
+        [Required(ErrorMessage = "La dirección requerida")]
+        public string NeedAddress { get; set; }
+
+        [Required(ErrorMessage = "La modalidad es requerida")]
+        [RegularExpression(@"^(Remota|Domicilio|Visita)$")]
+        public string Modality { get; set; }
+
         [Required]
         [DataType(DataType.Date)]
         public DateTime NeedDate { get; set; }

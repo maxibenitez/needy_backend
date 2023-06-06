@@ -108,7 +108,12 @@ namespace needy_logic
         {
             string applierCI = await _tokenLogic.GetUserCIFromToken();
 
-            return await _needRepository.ApplyNeedAsync(needId, applierCI);
+            if (!await IsNeedRequestor(needId, applierCI))
+            {
+                return await _needRepository.ApplyNeedAsync(needId, applierCI);
+            }
+
+            return false;
         }
 
         public async Task<bool> UnapplyNeedAsync(int needId)
@@ -154,6 +159,8 @@ namespace needy_logic
                 CreationDate = data.CreationDate,
                 NeedDate = data.NeedDate,
                 AcceptedDate = data.AcceptedDate,
+                NeedAddress = data.NeedAddress,
+                Modality = data.Modality,
             };
 
             need.RequestedSkill = await _skillRepository.GetSkillByIdAsync(data.RequestedSkillId);
@@ -192,6 +199,13 @@ namespace needy_logic
             string acceptedApplierCI = await _needRepository.GetNeedAcceptedApplierAsync(needId);
 
             return acceptedApplierCI.IsNullOrEmpty() ? false : true;
+        }
+
+        private async Task<bool> IsNeedRequestor(int needId, string applierCI)
+        {
+            string requestorCI = await _needRepository.GetNeedRequestorAsync(needId);
+
+            return requestorCI.Equals(applierCI) ? true : false;
         }
 
         #endregion

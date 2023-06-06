@@ -22,6 +22,6 @@
 
         public string Password { get; set; }
 
-        public int? SkillId { get; set; }
+        public string? AboutMe { get; set; }
     }
 }

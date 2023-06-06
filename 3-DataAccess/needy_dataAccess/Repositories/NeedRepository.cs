@@ -210,7 +210,7 @@ namespace needy_dataAccess.Repositories
                 command.Parameters.AddWithValue("@Description", parameters.Description);
                 command.Parameters.AddWithValue("@CreationDate", DateTime.Now);
                 command.Parameters.AddWithValue("@NeedDate", parameters.NeedDate);
-                command.Parameters.AddWithValue("@Status", "Pendiente");
+                command.Parameters.AddWithValue("@Status", "En espera");
                 command.Parameters.AddWithValue("@RequestedSkillId", parameters.RequestedSkillId);
 
                 var result = await command.ExecuteNonQueryAsync();
@@ -386,6 +386,8 @@ namespace needy_dataAccess.Repositories
                 NeedDate = reader.IsDBNull(reader.GetOrdinal("NeedDate")) ? null : (DateTime?)reader["NeedDate"],
                 AcceptedDate = reader.IsDBNull(reader.GetOrdinal("AcceptedDate")) ? null : (DateTime?)reader["AcceptedDate"],
                 RequestedSkillId = (int)reader["RequestedSkillId"],
+                NeedAddress = (string)reader["NeedAddress"],
+                Modality = (string)reader["Modality"],
             };
 
             return need;

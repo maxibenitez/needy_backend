@@ -19,5 +19,9 @@
         public DateTime? AcceptedDate { get; set; }
 
         public int RequestedSkillId { get; set; }
+
+        public string NeedAddress { get; set; }
+
+        public string Modality { get; set; }
     }
 }

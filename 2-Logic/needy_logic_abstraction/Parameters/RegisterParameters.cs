@@ -22,9 +22,12 @@ namespace needy_logic_abstraction.Parameters
         public string Zone { get; set; }
 
         [Required(ErrorMessage = "El teléfono requerido")]
+        [StringLength(9)]
+        [RegularExpression(@"^09\d{7}$", ErrorMessage = "El teléfono debe contener solo números")]
         public string Phone { get; set; }
 
         [Required(ErrorMessage = "El género requerido")]
+        [RegularExpression(@"^(Masculino|Femenino|Otros)$")]
         public string Gender { get; set; }
 
         [Required(ErrorMessage = "La fecha de nacimiento requerida")]
@@ -38,5 +41,9 @@ namespace needy_logic_abstraction.Parameters
         [Required(ErrorMessage = "La contraseña requerida")]
         [StringLength(8, MinimumLength = 4, ErrorMessage = "La contraseña debe contener entre 4 y 8 caracteres")]
         public string Password { get; set; }
+
+        [Required(ErrorMessage = "La descripción es requerido")]
+        [StringLength(150, ErrorMessage = "La descripción no debe superar los 150 caracteres")]
+        public string? AboutMe { get; set; }
     }
 }

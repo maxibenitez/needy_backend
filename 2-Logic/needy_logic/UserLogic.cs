@@ -9,7 +9,6 @@ namespace needy_logic
         #region Properties and Fields
 
         private readonly IUserRepository _userRepository;
-        private readonly ISkillRepository _skillRepository;
         private readonly IRatingRepository _ratingRepository;
         private readonly ITokenLogic _tokenLogic;
 
@@ -18,12 +17,10 @@ namespace needy_logic
         #region Builders
 
         public UserLogic(IUserRepository userRepository,
-            ISkillRepository skillRepository,
             IRatingRepository ratingRepository,
             ITokenLogic tokenLogic)
         {
             _userRepository = userRepository;
-            _skillRepository = skillRepository;
             _ratingRepository = ratingRepository;
             _tokenLogic = tokenLogic;
         }
@@ -65,11 +62,14 @@ namespace needy_logic
             return await UserBuilderAsync(data);
         }
 
-        public async Task<bool> InsertUserSkillAsync(int skillId)
+        public async Task InsertUserSkillsAsync(List<int> skillsId)
         {
             string userCI = await _tokenLogic.GetUserCIFromToken();
 
-            return await _userRepository.InsertUserSkillAsync(userCI, skillId);
+            foreach(int skillId in skillsId)
+            {
+                await _userRepository.InsertUserSkillAsync(userCI, skillId);
+            }
         }
 
         #endregion
@@ -87,19 +87,11 @@ namespace needy_logic
                 Zone = data.Zone,
                 Phone = data.Phone,
                 Age = await GetUserAgeAsync(data.BirthDate),
+                AboutMe = data.AboutMe,
             };
 
-            if(data.SkillId is not null)
-            {
-                user.Skill = await _skillRepository.GetSkillByIdAsync((int)data.SkillId);
-            }
-
-            List<Rating> ratings = (await _ratingRepository.GetUserRatingsAsync(data.CI)).ToList();
-
-            if(ratings.Count > 0)
-            {
-                user.AvgRating = await GetRatingAverageAsync(ratings);
-            }
+            user.Skills = await _userRepository.GetUserSkillsAsync(data.CI);
+            user.AvgRating = await GetRatingAverageAsync(data.CI);
 
             return user;
         }
@@ -117,17 +109,22 @@ namespace needy_logic
             return age;
         }
 
-
-        private async Task<double> GetRatingAverageAsync(IEnumerable<Rating> ratings)
+        private async Task<double> GetRatingAverageAsync(string userCI)
         {
+            List<Rating> ratings = (await _ratingRepository.GetUserRatingsAsync(userCI)).ToList();
             double total = 0;
 
-            foreach(Rating rating in ratings)
+            if (ratings.Count > 0)
             {
-                total += rating.Stars;
+                foreach (Rating rating in ratings)
+                {
+                    total += rating.Stars;
+                }
+
+                return total / ratings.Count();
             }
 
-            return total / ratings.Count();
+            return total;
         }
 
         #endregion

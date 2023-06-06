@@ -16,8 +16,10 @@
 
         public int Age { get; set; }
 
-        public Skill? Skill { get; set; }
+        public IEnumerable<Skill> Skills { get; set; }
 
         public double? AvgRating { get; set; }
+
+        public string? AboutMe { get; set; }
     }
 }

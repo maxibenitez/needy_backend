@@ -4,8 +4,16 @@ namespace needy_logic_abstraction.Parameters
 {
     public class InsertNeedParameters : IValidatableObject
     {
+        [Required(ErrorMessage = "La descripción es requerida")]
         [StringLength(150, ErrorMessage = "La descripción no debe superar los 150 caracteres")]
         public string Description { get; set; }
+
+        [Required(ErrorMessage = "La dirección requerida")]
+        public string NeedAddress { get; set; }
+
+        [Required(ErrorMessage = "La modalidad es requerida")]
+        [RegularExpression(@"^(Remota|Domicilio|Visita)$")]
+        public string Modality { get; set; }
 
         [Required(ErrorMessage = "La fecha de ayuda es requerida")]
         [DataType(DataType.Date)]
