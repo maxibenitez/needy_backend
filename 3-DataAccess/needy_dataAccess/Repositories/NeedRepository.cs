@@ -263,8 +263,7 @@ namespace needy_dataAccess.Repositories
                 var query = @"
                         UPDATE public.""Need""
                         SET ""Description"" = @Description,
-                            ""NeedDate"" = @NeedDate,
-                            ""RequestedSkillId"" = @RequestedSkillId
+                            ""NeedDate"" = @NeedDate
                         WHERE ""Id"" = @NeedId";
 
                 var command = new NpgsqlCommand(query, connection);
