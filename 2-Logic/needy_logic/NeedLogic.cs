@@ -85,6 +85,25 @@ namespace needy_logic
             return null;  
         }
 
+        public async Task<IEnumerable<Need>> GetUserAppliedNeedsAsync(string userCI)
+        {
+            List<NeedData> data = (await _needRepository.GetUserAppliedNeedsAsync(userCI)).ToList();
+
+            if (data != null)
+            {
+                List<Need> needs = new List<Need>();
+
+                foreach (NeedData need in data)
+                {
+                    needs.Add(await NeedBuilderAsync(need));
+                }
+
+                return needs;
+            }
+
+            return null;
+        }
+
         public async Task<bool> InsertNeedAsync(InsertNeedParameters parameters)
         {
             string userCI = await _tokenLogic.GetUserCIFromToken();
@@ -256,9 +275,6 @@ namespace needy_logic
 
         private async Task<bool> IsUserHasRequiredSkills(int needId, string applierCI)
         {
-            //var needSkills = await _skillRepository.GetNeedSkillsAsync(needId);
-            //var userSkills = await _skillRepository.GetUserSkillsAsync(applierCI);
-
             var needSkills = (await _skillRepository.GetNeedSkillsAsync(needId)).Select(skill => skill.Id).ToList();
             var userSkills = (await _skillRepository.GetUserSkillsAsync(applierCI)).Select(skill => skill.Id).ToList();
 

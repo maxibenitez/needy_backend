@@ -4,6 +4,7 @@ using needy_logic_abstraction;
 using Microsoft.AspNetCore.Authorization;
 using needy_logic_abstraction.Enumerables;
 using System.Net;
+using needy_logic;
 
 namespace needy_api.Controllers
 {
@@ -45,6 +46,17 @@ namespace needy_api.Controllers
         public async Task<IActionResult> GetNeedByIdAsync(int needId)
         {
             return Ok(await _needLogic.GetNeedByIdAsync(needId));
+        }
+
+        [HttpGet("get-user-applied-needs")]
+        public async Task<IActionResult> GetUserAppliedNeedsAsync([FromBody] string userCI)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+
+            return Ok(await _needLogic.GetUserAppliedNeedsAsync(userCI));
         }
 
         [HttpPost("insert-need")]

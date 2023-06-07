@@ -194,6 +194,35 @@ namespace needy_dataAccess.Repositories
             }
         }
 
+        public async Task<IEnumerable<NeedData>> GetUserAppliedNeedsAsync(string userCI)
+        {
+            using (var connection = _dbConnection.CreateConnection())
+            {
+                await connection.OpenAsync();
+
+                var query = @"
+                            SELECT n.*
+                            FROM public.""Need"" n
+                            INNER JOIN public.""NeedApplier"" a ON n.""Id"" = a.""NeedId""
+                            WHERE a.""ApplierCI"" = @UserCI";
+
+                var command = new NpgsqlCommand(query, connection);
+                command.Parameters.AddWithValue("@UserCI", userCI);
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    var needDataList = new List<NeedData>();
+
+                    while (await reader.ReadAsync())
+                    {
+                        needDataList.Add(await NeedDataBuilderAsync(reader));
+                    }
+
+                    return needDataList;
+                }
+            }
+        }
+
         public async Task<int> InsertNeedAsync(string userCI, InsertNeedParameters parameters)
         {
             using (var connection = _dbConnection.CreateConnection())
@@ -438,7 +467,6 @@ namespace needy_dataAccess.Repositories
                 CreationDate = (DateTime)reader["CreationDate"],
                 NeedDate = reader.IsDBNull(reader.GetOrdinal("NeedDate")) ? null : (DateTime?)reader["NeedDate"],
                 AcceptedDate = reader.IsDBNull(reader.GetOrdinal("AcceptedDate")) ? null : (DateTime?)reader["AcceptedDate"],
-                RequestedSkillId = (int)reader["RequestedSkillId"],
                 NeedAddress = (string)reader["NeedAddress"],
                 Modality = (string)reader["Modality"],
             };

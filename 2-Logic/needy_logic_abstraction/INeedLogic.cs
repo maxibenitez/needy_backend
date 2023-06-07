@@ -12,6 +12,8 @@ namespace needy_logic_abstraction
 
         Task<Need> GetNeedByIdAsync(int needId);
 
+        Task<IEnumerable<Need>> GetUserAppliedNeedsAsync(string userCI);
+
         Task<bool> InsertNeedAsync(InsertNeedParameters parameters);
 
         Task<bool> UpdateNeedAsync(UpdateNeedParameters parameters);
