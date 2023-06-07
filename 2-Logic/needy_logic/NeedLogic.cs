@@ -1,8 +1,8 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using needy_dataAccess.Interfaces;
-using needy_dataAccess.Repositories;
 using needy_dto;
 using needy_logic_abstraction;
+using needy_logic_abstraction.Enumerables;
 using needy_logic_abstraction.Parameters;
 
 namespace needy_logic
@@ -131,16 +131,29 @@ namespace needy_logic
             return await _needRepository.DeleteNeedAsync(needId);
         }
 
-        public async Task<bool> ApplyNeedAsync(int needId)
+        public async Task<ErrorStatus> ApplyNeedAsync(int needId)
         {
             string applierCI = await _tokenLogic.GetUserCIFromToken();
 
-            if (!await IsNeedRequestor(needId, applierCI))
+            bool isUserHasRequiredSkills = await IsUserHasRequiredSkills(needId, applierCI);
+            bool isNeedRequestor = await IsNeedRequestor(needId, applierCI);
+
+            if (isNeedRequestor)
             {
-                return await _needRepository.ApplyNeedAsync(needId, applierCI);
+                return ErrorStatus.IsNeedRequestor;
             }
 
-            return false;
+            if (!isUserHasRequiredSkills)
+            {
+                return ErrorStatus.NotHasRequiredSkills;
+            }
+
+            if(!await _needRepository.ApplyNeedAsync(needId, applierCI))
+            {
+                return ErrorStatus.InternalServerError;
+            }
+
+            return ErrorStatus.Success;
         }
 
         public async Task<bool> UnapplyNeedAsync(int needId)
@@ -150,7 +163,7 @@ namespace needy_logic
             return await _needRepository.DeleteNeedApplierAsync(needId, applierCI);
         }
 
-        public async Task<bool> AcceptApplierAsync(ManageApplierParameters parameters)
+        public async Task<ErrorStatus> AcceptApplierAsync(ManageApplierParameters parameters)
         {
             if(!await ExistAcceptedApplierAsync(parameters.NeedId))
             {
@@ -158,13 +171,19 @@ namespace needy_logic
 
                 if(appliersCI.Contains(parameters.ApplierCI))
                 {
-                    await ChangeStatusAsync(parameters.NeedId, "Aceptada");
+                    if(await ChangeStatusAsync(parameters.NeedId, "Aceptada") &&
+                        await _needRepository.AcceptApplierAsync(parameters))
+                    {
+                        return ErrorStatus.Success;
+                    }
 
-                    return await _needRepository.AcceptApplierAsync(parameters);
+                    return ErrorStatus.InternalServerError;
                 }
+
+                return ErrorStatus.ApplierNotExist;
             }
 
-            return false;
+            return ErrorStatus.AcceptedApllierExist;
         }
 
         public async Task<bool> DeclineApplierAsync(ManageApplierParameters parameters)
@@ -233,6 +252,17 @@ namespace needy_logic
             string requestorCI = await _needRepository.GetNeedRequestorAsync(needId);
 
             return requestorCI.Equals(applierCI) ? true : false;
+        }
+
+        private async Task<bool> IsUserHasRequiredSkills(int needId, string applierCI)
+        {
+            //var needSkills = await _skillRepository.GetNeedSkillsAsync(needId);
+            //var userSkills = await _skillRepository.GetUserSkillsAsync(applierCI);
+
+            var needSkills = (await _skillRepository.GetNeedSkillsAsync(needId)).Select(skill => skill.Id).ToList();
+            var userSkills = (await _skillRepository.GetUserSkillsAsync(applierCI)).Select(skill => skill.Id).ToList();
+
+            return needSkills.Any(skillId => userSkills.Contains(skillId)) ? true : false;
         }
 
         #endregion

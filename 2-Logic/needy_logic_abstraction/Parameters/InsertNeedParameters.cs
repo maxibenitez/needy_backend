@@ -8,7 +8,7 @@ namespace needy_logic_abstraction.Parameters
         [StringLength(150, ErrorMessage = "La descripción no debe superar los 150 caracteres")]
         public string Description { get; set; }
 
-        [Required(ErrorMessage = "La dirección requerida")]
+        [Required(ErrorMessage = "La dirección es requerida")]
         public string NeedAddress { get; set; }
 
         [Required(ErrorMessage = "La modalidad es requerida")]

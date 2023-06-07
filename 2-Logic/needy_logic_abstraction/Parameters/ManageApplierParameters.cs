@@ -8,9 +8,9 @@ namespace needy_logic_abstraction.Parameters
         [Range(1, int.MaxValue)]
         public int NeedId { get; set; }
 
-        [Required]
-        [StringLength(8)]
-        [RegularExpression("^[0-9]+$")]
+        [Required(ErrorMessage = "La cédula del aplicador es requerida")]
+        [StringLength(8, MinimumLength = 8, ErrorMessage = "La cédula debe contener 8 digitos")]
+        [RegularExpression("^[0-9]+$", ErrorMessage = "La cédula debe contener solo números")]
         public string ApplierCI { get; set; }
     }
 }

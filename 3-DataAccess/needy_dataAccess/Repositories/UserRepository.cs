@@ -57,9 +57,10 @@ namespace needy_dataAccess.Repositories
                 await connection.OpenAsync();
 
                 var query = @"
-                            SELECT *
-                            FROM public.""User""
-                            WHERE ""SkillId"" = @SkillId";
+                            SELECT u.*
+                            FROM public.""User"" u
+                            INNER JOIN public.""UserSkill"" s ON u.""CI"" = s.""UserCI""
+                            WHERE s.""SkillId"" = @SkillId";
 
                 var command = new NpgsqlCommand(query, connection);
                 command.Parameters.AddWithValue("@SkillId", skillId);
@@ -138,8 +139,8 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             INSERT INTO public.""User"" (""CI"", ""FirstName"", ""LastName"", ""Address"", ""Zone"",
-                                                        ""Phone"", ""Gender"", ""BirthDate"", ""Email"", ""Password"")
-                            VALUES (@CI, @FirstName, @LastName, @Address, @Zone, @Phone, @Gender, @BirthDate, @Email, @Password)";
+                                                        ""Phone"", ""Gender"", ""BirthDate"", ""Email"", ""Password"", ""AboutMe"")
+                            VALUES (@CI, @FirstName, @LastName, @Address, @Zone, @Phone, @Gender, @BirthDate, @Email, @Password, @AboutMe)";
 
                 var command = new NpgsqlCommand(query, connection);
                 command.Parameters.AddWithValue("@CI", parameters.CI);
@@ -152,6 +153,7 @@ namespace needy_dataAccess.Repositories
                 command.Parameters.AddWithValue("@BirthDate", parameters.BirthDate);
                 command.Parameters.AddWithValue("@Email", parameters.Email);
                 command.Parameters.AddWithValue("@Password", parameters.Password);
+                command.Parameters.AddWithValue("@AboutMe", parameters.AboutMe);
 
                 var result = await command.ExecuteNonQueryAsync();
 
@@ -193,7 +195,6 @@ namespace needy_dataAccess.Repositories
                             ""Zone"" = @Zone,
                             ""Phone"" = @Phone,
                             ""Gender"" = @Gender,
-                            ""BirthDate"" = @BirthDate,
                             ""AboutMe"" = @AboutMe
                         WHERE ""CI"" = @CI";
 
@@ -205,7 +206,6 @@ namespace needy_dataAccess.Repositories
                 command.Parameters.AddWithValue("@Zone", parameters.Zone);
                 command.Parameters.AddWithValue("@Phone", parameters.Phone);
                 command.Parameters.AddWithValue("@Gender", parameters.Gender);
-                command.Parameters.AddWithValue("@BirthDate", parameters.BirthDate);
                 command.Parameters.AddWithValue("@AboutMe", parameters.AboutMe);
 
                 var result = await command.ExecuteNonQueryAsync();

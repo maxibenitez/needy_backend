@@ -7,6 +7,9 @@
         UserNotExist,
         EmailAlreadyExist,
         AcceptedApllierExist,
+        NotHasRequiredSkills,
+        ApplierNotExist,
+        IsNeedRequestor,
         BadRequest,
         InternalServerError
     }

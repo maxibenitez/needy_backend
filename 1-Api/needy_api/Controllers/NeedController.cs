@@ -2,6 +2,8 @@
 using needy_logic_abstraction.Parameters;
 using needy_logic_abstraction;
 using Microsoft.AspNetCore.Authorization;
+using needy_logic_abstraction.Enumerables;
+using System.Net;
 
 namespace needy_api.Controllers
 {
@@ -53,7 +55,7 @@ namespace needy_api.Controllers
                 return BadRequest(ModelState.Values);
             }
 
-            return await _needLogic.InsertNeedAsync(parameters) ? Ok() : BadRequest();
+            return await _needLogic.InsertNeedAsync(parameters) ? Ok("Solicitud de necesidad creada con éxito") : BadRequest("Ha ocurrido un error");
         }
 
         [HttpPut("update-need")]
@@ -64,7 +66,7 @@ namespace needy_api.Controllers
                 return BadRequest(ModelState.Values);
             }
 
-            return await _needLogic.UpdateNeedAsync(parameters) ? Ok() : BadRequest();
+            return await _needLogic.UpdateNeedAsync(parameters) ? Ok("Solicitud de necesidad actualizada con éxito") : BadRequest("Ha ocurrido un error");
         }
 
         [HttpDelete("delete-need")]
@@ -75,7 +77,7 @@ namespace needy_api.Controllers
                 return BadRequest(ModelState.Values);
             }
 
-            return await _needLogic.DeleteNeedAsync(needId) ? Ok() : BadRequest();
+            return await _needLogic.DeleteNeedAsync(needId) ? Ok("Solicitud de necesidad borrada con éxito") : BadRequest("Ha ocurrido un error");
         }
 
         [HttpPost("apply-need")]
@@ -86,7 +88,19 @@ namespace needy_api.Controllers
                 return BadRequest(ModelState.Values);
             }
 
-            return await _needLogic.ApplyNeedAsync(needId) ? Ok() : BadRequest();
+            ErrorStatus status = await _needLogic.ApplyNeedAsync(needId);
+
+            switch (status)
+            {
+                case ErrorStatus.Success:
+                    return Ok("Se ha aplicado con éxito");
+                case ErrorStatus.IsNeedRequestor:
+                    return BadRequest("No puede aplicarse a una solicitud propia");
+                case ErrorStatus.NotHasRequiredSkills:
+                    return BadRequest("No cumple con las habilidades requeridas");
+                default:
+                    return StatusCode((int)HttpStatusCode.InternalServerError, "Ha ocurrido un error");
+            }
         }
 
         [HttpDelete("unapply-need")]
@@ -97,7 +111,7 @@ namespace needy_api.Controllers
                 return BadRequest(ModelState.Values);
             }
 
-            return await _needLogic.UnapplyNeedAsync(needId) ? Ok() : BadRequest();
+            return await _needLogic.UnapplyNeedAsync(needId) ? Ok("Se ha desaplicado con éxito") : BadRequest("Ha ocurrido un error");
         }
 
         [HttpPut("accept-applier")]
@@ -108,7 +122,19 @@ namespace needy_api.Controllers
                 return BadRequest(ModelState.Values);
             }
 
-            return await _needLogic.AcceptApplierAsync(parameters) ? Ok() : BadRequest();
+            ErrorStatus status = await _needLogic.AcceptApplierAsync(parameters);
+
+            switch (status)
+            {
+                case ErrorStatus.Success:
+                    return Ok("Usuario aceptado con éxito");
+                case ErrorStatus.ApplierNotExist:
+                    return BadRequest("Este usuario no está aplicado");
+                case ErrorStatus.AcceptedApllierExist:
+                    return BadRequest("Ya existe un usuario aceptado");
+                default:
+                    return StatusCode((int)HttpStatusCode.InternalServerError, "Ha ocurrido un error");
+            }
         }
 
         [HttpDelete("decline-applier")]
@@ -119,7 +145,7 @@ namespace needy_api.Controllers
                 return BadRequest(ModelState.Values);
             }
 
-            return await _needLogic.DeclineApplierAsync(parameters) ? Ok() : BadRequest();
+            return await _needLogic.DeclineApplierAsync(parameters) ? Ok("Usuario desaplicado con éxito") : BadRequest("Ha ocurrido un error");
         }
 
         #endregion

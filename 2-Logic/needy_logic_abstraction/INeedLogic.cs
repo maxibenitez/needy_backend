@@ -1,4 +1,5 @@
 ﻿using needy_dto;
+using needy_logic_abstraction.Enumerables;
 using needy_logic_abstraction.Parameters;
 
 namespace needy_logic_abstraction
@@ -17,11 +18,11 @@ namespace needy_logic_abstraction
 
         Task<bool> DeleteNeedAsync(int needId);
 
-        Task<bool> ApplyNeedAsync(int needId);
+        Task<ErrorStatus> ApplyNeedAsync(int needId);
 
         Task<bool> UnapplyNeedAsync(int needId);
 
-        Task<bool> AcceptApplierAsync(ManageApplierParameters parameters);
+        Task<ErrorStatus> AcceptApplierAsync(ManageApplierParameters parameters);
 
         Task<bool> DeclineApplierAsync(ManageApplierParameters parameters);
     }

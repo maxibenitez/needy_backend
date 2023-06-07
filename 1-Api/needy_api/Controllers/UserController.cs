@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using needy_logic;
 using needy_logic_abstraction;
 using needy_logic_abstraction.Parameters;
 
@@ -61,7 +60,7 @@ namespace needy_api.Controllers
 
             await _userLogic.InsertUserSkillsAsync(skillsId);
 
-            return Ok();
+            return Ok("Habilidades guardadas con éxito");
         }
 
         [HttpPut("update-user")]
@@ -72,7 +71,7 @@ namespace needy_api.Controllers
                 return BadRequest(ModelState.Values);
             }
 
-            return await _userLogic.UpdateUserAsync(parameters) ? Ok() : BadRequest();
+            return await _userLogic.UpdateUserAsync(parameters) ? Ok("Datos actualizados con éxito") : BadRequest("Ha ocurrido un error");
         }
 
         [HttpPut("update-user-skills")]
@@ -85,7 +84,7 @@ namespace needy_api.Controllers
 
             await _userLogic.UpdateUserSkillsAsync(skillsId);
 
-            return Ok();
+            return Ok("Habilidades actualizadas con éxito");
         }
 
         #endregion

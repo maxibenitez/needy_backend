@@ -12,7 +12,7 @@ namespace needy_logic_abstraction.Parameters
         [StringLength(150, ErrorMessage = "Descripción no debe superar los 150 caracteres")]
         public string Description { get; set; }
 
-        [Required(ErrorMessage = "La dirección requerida")]
+        [Required(ErrorMessage = "La dirección es requerida")]
         public string NeedAddress { get; set; }
 
         [Required(ErrorMessage = "La modalidad es requerida")]
@@ -28,9 +28,9 @@ namespace needy_logic_abstraction.Parameters
 
         IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
-            if (NeedDate <= DateTime.Today)
+            if (NeedDate <= DateTime.Today.AddDays(7))
             {
-                yield return new ValidationResult("Fecha de necesidad debe ser mayor a la fecha de hoy");
+                yield return new ValidationResult("La fecha de la necesidad debe ser al menos 7 días posterior a la fecha de hoy");
             }
         }
     }

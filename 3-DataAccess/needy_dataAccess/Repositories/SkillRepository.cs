@@ -114,7 +114,7 @@ namespace needy_dataAccess.Repositories
                             SELECT s.""Id"", s.""Name""
                             FROM public.""NeedSkill"" n
                             INNER JOIN public.""Skill"" s ON n.""SkillId"" = s.""Id""
-                            WHERE n.""Id"" = @NeedId";
+                            WHERE n.""NeedId"" = @NeedId";
 
                 var command = new NpgsqlCommand(query, connection);
                 command.Parameters.AddWithValue("@NeedId", needId);

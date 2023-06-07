@@ -17,6 +17,8 @@ namespace needy_dataAccess.Interfaces
 
         Task<string> GetNeedAcceptedApplierAsync(int needId);
 
+        Task<IEnumerable<NeedData>> GetUserAppliedNeedsAsync(string userCI);
+
         Task<int> InsertNeedAsync(string userCI, InsertNeedParameters parameters);
 
         Task<bool> InsertNeedSkillAsync(int needId, int skillId);
