@@ -19,9 +19,8 @@ namespace needy_logic_abstraction.Parameters
         [DataType(DataType.Date)]
         public DateTime NeedDate { get; set; }
 
-        [Required(ErrorMessage = "La habilidad solicitada requerida")]
-        [Range(1, int.MaxValue)]
-        public int RequestedSkillId { get; set; }
+        [Required(ErrorMessage = "Las habilidades solicitadas son requeridas")]
+        public IEnumerable<int> RequestedSkillsId { get; set; }
 
         IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {

@@ -20,7 +20,7 @@
 
         public DateTime? AcceptedDate { get; set; }
 
-        public Skill RequestedSkill { get; set; }
+        public IEnumerable<Skill> RequestedSkills { get; set; }
 
         public string NeedAddress { get; set; }
 

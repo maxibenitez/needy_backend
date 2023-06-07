@@ -7,5 +7,9 @@ namespace needy_dataAccess.Interfaces
         Task<IEnumerable<Skill>> GetSkillsAsync();
 
         Task<Skill> GetSkillByIdAsync(int skillId);
+
+        Task<IEnumerable<Skill>> GetUserSkillsAsync(string userCI);
+
+        Task<IEnumerable<Skill>> GetNeedSkillsAsync(int needId);
     }
 }

@@ -12,9 +12,9 @@ namespace needy_logic_abstraction
         Task<Need> GetNeedByIdAsync(int needId);
 
         Task<bool> InsertNeedAsync(InsertNeedParameters parameters);
-        
+
         Task<bool> UpdateNeedAsync(UpdateNeedParameters parameters);
-        
+
         Task<bool> DeleteNeedAsync(int needId);
 
         Task<bool> ApplyNeedAsync(int needId);

@@ -1,5 +1,4 @@
 ﻿using needy_dataAccess.Interfaces;
-using needy_dataAccess.Repositories;
 using needy_dto;
 using needy_logic_abstraction;
 using needy_logic_abstraction.Parameters;
@@ -11,6 +10,7 @@ namespace needy_logic
         #region Properties and Fields
 
         private readonly IUserRepository _userRepository;
+        private readonly ISkillRepository _skillRepository;
         private readonly IRatingRepository _ratingRepository;
         private readonly ITokenLogic _tokenLogic;
 
@@ -19,10 +19,12 @@ namespace needy_logic
         #region Builders
 
         public UserLogic(IUserRepository userRepository,
+            ISkillRepository skillRepository,
             IRatingRepository ratingRepository,
             ITokenLogic tokenLogic)
         {
             _userRepository = userRepository;
+            _skillRepository = skillRepository;
             _ratingRepository = ratingRepository;
             _tokenLogic = tokenLogic;
         }
@@ -108,7 +110,7 @@ namespace needy_logic
                 AboutMe = data.AboutMe,
             };
 
-            user.Skills = await _userRepository.GetUserSkillsAsync(data.CI);
+            user.Skills = await _skillRepository.GetUserSkillsAsync(data.CI);
             user.AvgRating = await GetRatingAverageAsync(data.CI);
 
             return user;

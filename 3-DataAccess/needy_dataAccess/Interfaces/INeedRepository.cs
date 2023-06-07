@@ -17,8 +17,12 @@ namespace needy_dataAccess.Interfaces
 
         Task<string> GetNeedAcceptedApplierAsync(int needId);
 
-        Task<bool> InsertNeedAsync(string userCI, InsertNeedParameters parameters);
-        
+        Task<int> InsertNeedAsync(string userCI, InsertNeedParameters parameters);
+
+        Task<bool> InsertNeedSkillAsync(int needId, int skillId);
+
+        Task<bool> DeleteNeedSkillsAsync(int needId);
+
         Task<bool> UpdateNeedAsync(UpdateNeedParameters parameters);
         
         Task<bool> DeleteNeedAsync(int needId);

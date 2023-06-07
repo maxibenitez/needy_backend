@@ -194,24 +194,59 @@ namespace needy_dataAccess.Repositories
             }
         }
 
-        public async Task<bool> InsertNeedAsync(string userCI, InsertNeedParameters parameters)
+        public async Task<int> InsertNeedAsync(string userCI, InsertNeedParameters parameters)
+        {
+            using (var connection = _dbConnection.CreateConnection())
+            {
+                await connection.OpenAsync();
+
+                using (var transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        var query = @"
+                        INSERT INTO public.""Need"" (""RequestorCI"", ""Description"", ""CreationDate"", 
+                                                    ""NeedDate"", ""Status"", ""Modality"", ""NeedAddress"")
+                        VALUES (@RequestorCI, @Description, @CreationDate, @NeedDate, @Status, @Modality, @NeedAddress);
+                        SELECT LASTVAL();";
+
+                        var command = new NpgsqlCommand(query, connection);
+                        command.Parameters.AddWithValue("@RequestorCI", userCI);
+                        command.Parameters.AddWithValue("@Description", parameters.Description);
+                        command.Parameters.AddWithValue("@CreationDate", DateTime.Now);
+                        command.Parameters.AddWithValue("@NeedDate", parameters.NeedDate);
+                        command.Parameters.AddWithValue("@Status", "En espera");
+                        command.Parameters.AddWithValue("@Modality", parameters.Modality);
+                        command.Parameters.AddWithValue("@NeedAddress", parameters.NeedAddress);
+
+                        var id = await command.ExecuteScalarAsync();
+
+                        transaction.Commit();
+
+                        return Convert.ToInt32(id);
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        return 0;
+                    }
+                }
+            }
+        }
+
+        public async Task<bool> InsertNeedSkillAsync(int needId, int skillId)
         {
             using (var connection = _dbConnection.CreateConnection())
             {
                 await connection.OpenAsync();
 
                 var query = @"
-                        INSERT INTO public.""Need"" (""RequestorCI"", ""Description"", ""CreationDate"", 
-                                                    ""NeedDate"", ""Status"", ""RequestedSkillId"")
-                        VALUES (@RequestorCI, @Description, @CreationDate, @NeedDate, @Status, @RequestedSkillId)";
+                        INSERT INTO public.""NeedSkill"" (""SkillId"", ""NeedId"")
+                        VALUES (@SkillId, @NeedId)";
 
                 var command = new NpgsqlCommand(query, connection);
-                command.Parameters.AddWithValue("@RequestorCI", userCI);
-                command.Parameters.AddWithValue("@Description", parameters.Description);
-                command.Parameters.AddWithValue("@CreationDate", DateTime.Now);
-                command.Parameters.AddWithValue("@NeedDate", parameters.NeedDate);
-                command.Parameters.AddWithValue("@Status", "En espera");
-                command.Parameters.AddWithValue("@RequestedSkillId", parameters.RequestedSkillId);
+                command.Parameters.AddWithValue("@NeedId", needId);
+                command.Parameters.AddWithValue("@SkillId", skillId);
 
                 var result = await command.ExecuteNonQueryAsync();
 
@@ -236,7 +271,6 @@ namespace needy_dataAccess.Repositories
                 command.Parameters.AddWithValue("@NeedId", parameters.NeedId);
                 command.Parameters.AddWithValue("@Description", parameters.Description);
                 command.Parameters.AddWithValue("@NeedDate", parameters.NeedDate);
-                command.Parameters.AddWithValue("@RequestedSkillId", parameters.RequestedSkillId);
 
                 var result = await command.ExecuteNonQueryAsync();
 
@@ -254,6 +288,26 @@ namespace needy_dataAccess.Repositories
                             DELETE
                             FROM public.""Need""
                             WHERE ""Id"" = @NeedId";
+
+                var command = new NpgsqlCommand(query, connection);
+                command.Parameters.AddWithValue("@NeedId", needId);
+
+                var result = await command.ExecuteNonQueryAsync();
+
+                return result > 0;
+            }
+        }
+
+        public async Task<bool> DeleteNeedSkillsAsync(int needId)
+        {
+            using (var connection = _dbConnection.CreateConnection())
+            {
+                await connection.OpenAsync();
+
+                var query = @"
+                            DELETE
+                            FROM public.""NeedSkill""
+                            WHERE ""NeedId"" = @NeedId";
 
                 var command = new NpgsqlCommand(query, connection);
                 command.Parameters.AddWithValue("@NeedId", needId);

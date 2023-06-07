@@ -89,12 +89,39 @@ namespace needy_logic
         {
             string userCI = await _tokenLogic.GetUserCIFromToken();
 
-            return await _needRepository.InsertNeedAsync(userCI, parameters);
+            int needId = await _needRepository.InsertNeedAsync(userCI, parameters);
+
+            if (needId != 0)
+            {
+                foreach (int skillId in parameters.RequestedSkillsId)
+                {
+                    await _needRepository.InsertNeedSkillAsync(needId, skillId);
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         public async Task<bool> UpdateNeedAsync(UpdateNeedParameters parameters)
         {
-            return await _needRepository.UpdateNeedAsync(parameters);
+            if (await _needRepository.UpdateNeedAsync(parameters))
+            {
+                if (await _needRepository.DeleteNeedSkillsAsync(parameters.NeedId))
+                {
+                    foreach (int skillId in parameters.RequestedSkillsId)
+                    {
+                        await _needRepository.InsertNeedSkillAsync(parameters.NeedId, skillId);
+                    }
+
+                    return true;
+                }
+
+                return false;
+            }
+
+            return false;
         }
 
         public async Task<bool> DeleteNeedAsync(int needId)
@@ -163,7 +190,7 @@ namespace needy_logic
                 Modality = data.Modality,
             };
 
-            need.RequestedSkill = await _skillRepository.GetSkillByIdAsync(data.RequestedSkillId);
+            need.RequestedSkills = await _skillRepository.GetNeedSkillsAsync(data.Id);
             need.Appliers = await GetNeedAppliersAsync(data.Id);
             need.Requestor = await _userLogic.GetUserByCIAsync(data.RequestorCI);
 
