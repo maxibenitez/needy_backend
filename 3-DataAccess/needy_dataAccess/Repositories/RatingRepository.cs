@@ -32,7 +32,7 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             SELECT *
-                            FROM public.""Rating""
+                            FROM public.""Ratings""
                             WHERE ""ReceiverCI"" = @ReceiverCI";
 
                 var command = new NpgsqlCommand(query, connection);
@@ -59,7 +59,7 @@ namespace needy_dataAccess.Repositories
                 await connection.OpenAsync();
 
                 var query = @"
-                            INSERT INTO public.""Rating"" (""NeedId"", ""GiverCI"", ""ReceiverCI"", ""Stars"", ""Comment"")
+                            INSERT INTO public.""Ratings"" (""NeedId"", ""GiverCI"", ""ReceiverCI"", ""Stars"", ""Comment"")
                             VALUES (@NeedId, @GiverCI, @ReceiverCI, @Stars, @Comment)";
 
                 var command = new NpgsqlCommand(query, connection);

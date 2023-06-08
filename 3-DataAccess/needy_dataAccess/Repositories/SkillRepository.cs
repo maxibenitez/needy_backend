@@ -31,7 +31,7 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             SELECT *
-                            FROM public.""Skill""";
+                            FROM public.""Skills""";
 
                 var command = new NpgsqlCommand(query, connection);
 
@@ -57,7 +57,7 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             SELECT *
-                            FROM public.""Skill""
+                            FROM public.""Skills""
                             WHERE ""Id"" = @Id";
 
                 var command = new NpgsqlCommand(query, connection);
@@ -83,8 +83,8 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             SELECT s.""Id"", s.""Name""
-                            FROM public.""UserSkill"" u
-                            INNER JOIN public.""Skill"" s ON u.""SkillId"" = s.""Id""
+                            FROM public.""UsersSkills"" u
+                            INNER JOIN public.""Skills"" s ON u.""SkillId"" = s.""Id""
                             WHERE u.""UserCI"" = @UserCI";
 
                 var command = new NpgsqlCommand(query, connection);
@@ -112,8 +112,8 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             SELECT s.""Id"", s.""Name""
-                            FROM public.""NeedSkill"" n
-                            INNER JOIN public.""Skill"" s ON n.""SkillId"" = s.""Id""
+                            FROM public.""NeedsSkills"" n
+                            INNER JOIN public.""Skills"" s ON n.""SkillId"" = s.""Id""
                             WHERE n.""NeedId"" = @NeedId";
 
                 var command = new NpgsqlCommand(query, connection);

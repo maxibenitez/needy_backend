@@ -50,19 +50,6 @@ namespace needy_api.Controllers
             return Ok(await _userLogic.GetUserByCIAsync(userCI));
         }
 
-        [HttpPost("insert-user-skills")]
-        public async Task<IActionResult> InsertUserSkillsAsync([FromBody] List<int> skillsId)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState.Values);
-            }
-
-            await _userLogic.InsertUserSkillsAsync(skillsId);
-
-            return Ok("Habilidades guardadas con éxito");
-        }
-
         [HttpPut("update-user")]
         public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserParameters parameters)
         {
@@ -72,19 +59,6 @@ namespace needy_api.Controllers
             }
 
             return await _userLogic.UpdateUserAsync(parameters) ? Ok("Datos actualizados con éxito") : BadRequest("Ha ocurrido un error");
-        }
-
-        [HttpPut("update-user-skills")]
-        public async Task<IActionResult> UpdateUserSkillsAsync([FromBody] List<int> skillsId)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState.Values);
-            }
-
-            await _userLogic.UpdateUserSkillsAsync(skillsId);
-
-            return Ok("Habilidades actualizadas con éxito");
         }
 
         #endregion

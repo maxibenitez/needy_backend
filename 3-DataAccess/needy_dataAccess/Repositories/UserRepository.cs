@@ -32,7 +32,7 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             SELECT *
-                            FROM public.""User""";
+                            FROM public.""Users""";
 
                 var command = new NpgsqlCommand(query, connection);
 
@@ -58,8 +58,8 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             SELECT u.*
-                            FROM public.""User"" u
-                            INNER JOIN public.""UserSkill"" s ON u.""CI"" = s.""UserCI""
+                            FROM public.""Users"" u
+                            INNER JOIN public.""UsersSkills"" s ON u.""CI"" = s.""UserCI""
                             WHERE s.""SkillId"" = @SkillId";
 
                 var command = new NpgsqlCommand(query, connection);
@@ -87,7 +87,7 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             SELECT *
-                            FROM public.""User""
+                            FROM public.""Users""
                             WHERE ""CI"" = @CI";
 
                 var command = new NpgsqlCommand(query, connection);
@@ -113,7 +113,7 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             SELECT *
-                            FROM public.""User""
+                            FROM public.""Users""
                             WHERE ""Email"" = @Email";
 
                 var command = new NpgsqlCommand(query, connection);
@@ -138,7 +138,7 @@ namespace needy_dataAccess.Repositories
                 await connection.OpenAsync();
 
                 var query = @"
-                            INSERT INTO public.""User"" (""CI"", ""FirstName"", ""LastName"", ""Address"", ""Zone"",
+                            INSERT INTO public.""Users"" (""CI"", ""FirstName"", ""LastName"", ""Address"", ""Zone"",
                                                         ""Phone"", ""Gender"", ""BirthDate"", ""Email"", ""Password"", ""AboutMe"")
                             VALUES (@CI, @FirstName, @LastName, @Address, @Zone, @Phone, @Gender, @BirthDate, @Email, @Password, @AboutMe)";
 
@@ -168,7 +168,7 @@ namespace needy_dataAccess.Repositories
                 await connection.OpenAsync();
 
                 var query = @"
-                        INSERT INTO public.""UserSkill"" (""SkillId"", ""UserCI"")
+                        INSERT INTO public.""UsersSkills"" (""SkillId"", ""UserCI"")
                         VALUES (@SkillId, @UserCI)";
 
                 var command = new NpgsqlCommand(query, connection);
@@ -188,7 +188,7 @@ namespace needy_dataAccess.Repositories
                 await connection.OpenAsync();
 
                 var query = @"
-                        UPDATE public.""User""
+                        UPDATE public.""Users""
                         SET ""FirstName"" = @FirstName,
                             ""LastName"" = @LastName,
                             ""Address"" = @Address,
@@ -222,7 +222,7 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             DELETE
-                            FROM public.""UserSkill""
+                            FROM public.""UsersSkills""
                             WHERE ""UserCI"" = @UserCI";
 
                 var command = new NpgsqlCommand(query, connection);

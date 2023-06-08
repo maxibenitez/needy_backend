@@ -46,6 +46,8 @@ namespace needy_logic_abstraction.Parameters
         [StringLength(150, ErrorMessage = "La descripción no debe superar los 150 caracteres")]
         public string AboutMe { get; set; }
 
+        public IEnumerable<int> SkillsId { get; set; }
+
         IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             DateTime currentDate = DateTime.Today;

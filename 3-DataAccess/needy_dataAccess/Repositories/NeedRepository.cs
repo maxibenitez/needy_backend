@@ -32,7 +32,7 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             SELECT *
-                            FROM public.""Need""";
+                            FROM public.""Needs""";
 
                 var command = new NpgsqlCommand(query, connection);
 
@@ -58,7 +58,7 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             SELECT *
-                            FROM public.""Need""
+                            FROM public.""Needs""
                             WHERE ""RequestedSkillId"" = @SkillId";
 
                 var command = new NpgsqlCommand(query, connection);
@@ -86,7 +86,7 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             SELECT *
-                            FROM public.""Need""
+                            FROM public.""Needs""
                             WHERE ""Id"" = @NeedId";
 
                 var command = new NpgsqlCommand(query, connection);
@@ -112,7 +112,7 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             SELECT ""ApplierCI""
-                            FROM public.""NeedApplier""
+                            FROM public.""NeedsAppliers""
                             WHERE ""NeedId"" = @NeedId";
 
                 var command = new NpgsqlCommand(query, connection);
@@ -140,7 +140,7 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             SELECT ""RequestorCI""
-                            FROM public.""Need""
+                            FROM public.""Needs""
                             WHERE ""Id"" = @NeedId";
 
                 var command = new NpgsqlCommand(query, connection);
@@ -171,7 +171,7 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             SELECT ""AcceptedApplierCI""
-                            FROM public.""Need""
+                            FROM public.""Needs""
                             WHERE ""Id"" = @NeedId";
 
                 var command = new NpgsqlCommand(query, connection);
@@ -202,8 +202,8 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             SELECT n.*
-                            FROM public.""Need"" n
-                            INNER JOIN public.""NeedApplier"" a ON n.""Id"" = a.""NeedId""
+                            FROM public.""Needs"" n
+                            INNER JOIN public.""NeedsAppliers"" a ON n.""Id"" = a.""NeedId""
                             WHERE a.""ApplierCI"" = @UserCI";
 
                 var command = new NpgsqlCommand(query, connection);
@@ -234,7 +234,7 @@ namespace needy_dataAccess.Repositories
                     try
                     {
                         var query = @"
-                        INSERT INTO public.""Need"" (""RequestorCI"", ""Description"", ""CreationDate"", 
+                        INSERT INTO public.""Needs"" (""RequestorCI"", ""Description"", ""CreationDate"", 
                                                     ""NeedDate"", ""Status"", ""Modality"", ""NeedAddress"")
                         VALUES (@RequestorCI, @Description, @CreationDate, @NeedDate, @Status, @Modality, @NeedAddress);
                         SELECT LASTVAL();";
@@ -270,7 +270,7 @@ namespace needy_dataAccess.Repositories
                 await connection.OpenAsync();
 
                 var query = @"
-                        INSERT INTO public.""NeedSkill"" (""SkillId"", ""NeedId"")
+                        INSERT INTO public.""NeedsSkills"" (""SkillId"", ""NeedId"")
                         VALUES (@SkillId, @NeedId)";
 
                 var command = new NpgsqlCommand(query, connection);
@@ -290,7 +290,7 @@ namespace needy_dataAccess.Repositories
                 await connection.OpenAsync();
 
                 var query = @"
-                        UPDATE public.""Need""
+                        UPDATE public.""Needs""
                         SET ""Description"" = @Description,
                             ""NeedDate"" = @NeedDate
                         WHERE ""Id"" = @NeedId";
@@ -314,7 +314,7 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             DELETE
-                            FROM public.""Need""
+                            FROM public.""Needs""
                             WHERE ""Id"" = @NeedId";
 
                 var command = new NpgsqlCommand(query, connection);
@@ -334,7 +334,7 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             DELETE
-                            FROM public.""NeedSkill""
+                            FROM public.""NeedsSkills""
                             WHERE ""NeedId"" = @NeedId";
 
                 var command = new NpgsqlCommand(query, connection);
@@ -354,7 +354,7 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             DELETE
-                            FROM public.""NeedApplier""
+                            FROM public.""NeedsAppliers""
                             WHERE ""NeedId"" = @NeedId";
 
                 var command = new NpgsqlCommand(query, connection);
@@ -373,7 +373,7 @@ namespace needy_dataAccess.Repositories
                 await connection.OpenAsync();
 
                 var query = @"
-                        INSERT INTO public.""NeedApplier"" (""NeedId"", ""ApplierCI"")
+                        INSERT INTO public.""NeedsAppliers"" (""NeedId"", ""ApplierCI"")
                         VALUES (@NeedId, @ApplierCI)";
 
                 var command = new NpgsqlCommand(query, connection);
@@ -394,7 +394,7 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             DELETE
-                            FROM public.""NeedApplier""
+                            FROM public.""NeedsAppliers""
                             WHERE ""NeedId"" = @NeedId AND ""ApplierCI"" = @ApplierCI";
 
                 var command = new NpgsqlCommand(query, connection);
@@ -414,7 +414,7 @@ namespace needy_dataAccess.Repositories
                 await connection.OpenAsync();
 
                 var query = @"
-                        UPDATE public.""Need""
+                        UPDATE public.""Needs""
                         SET ""AcceptedApplierCI"" = @AcceptedApplierCI,
                             ""AcceptedDate"" = @AcceptedDate
                         WHERE ""Id"" = @NeedId;";
@@ -437,7 +437,7 @@ namespace needy_dataAccess.Repositories
                 await connection.OpenAsync();
 
                 var query = @"
-                        UPDATE public.""Need""
+                        UPDATE public.""Needs""
                         SET ""Status"" = @Status
                         WHERE ""Id"" = @NeedId;";
 

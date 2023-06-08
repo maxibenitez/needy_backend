@@ -3,6 +3,7 @@ using needy_dto;
 using needy_logic_abstraction;
 using needy_logic_abstraction.Parameters;
 using needy_logic_abstraction.Enumerables;
+using needy_dataAccess.Repositories;
 
 namespace needy_logic
 {
@@ -62,6 +63,14 @@ namespace needy_logic
 
             if (await _userRepository.InsertUserAsync(parameters))
             {
+                if(parameters.SkillsId.Count() > 0)
+                {
+                    foreach (int skillId in parameters.SkillsId)
+                    {
+                        await _userRepository.InsertUserSkillAsync(parameters.CI, skillId);
+                    }
+                }
+
                 return ErrorStatus.Success;
             }
 
