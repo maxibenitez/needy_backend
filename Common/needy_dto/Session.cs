@@ -2,14 +2,8 @@
 {
     public class Session
     {
-        public string CI { get; set; }
+        public string Token { get; set; }
 
-        public string FirstName { get; set; }
-
-        public string LastName { get; set; }
-
-        public string Email { get; set; }
-
-        public DateTime LoginDate { get; set; }
+        public DateTime ExpiresIn { get; set; }
     }
 }

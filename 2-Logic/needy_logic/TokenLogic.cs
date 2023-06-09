@@ -47,7 +47,7 @@ namespace needy_logic
                 _configuration["JWT:Issuer"],
                 _configuration["JWT:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(60),
+                expires: DateTime.UtcNow.AddSeconds(7200),
                 signingCredentials: creds
             );
 

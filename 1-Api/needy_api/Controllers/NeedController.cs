@@ -48,7 +48,7 @@ namespace needy_api.Controllers
             return Ok(await _needLogic.GetNeedByIdAsync(needId));
         }
 
-        [HttpGet("get-user-applied-needs")]
+        [HttpPost("get-user-applied-needs")]
         public async Task<IActionResult> GetUserAppliedNeedsAsync([FromBody] string userCI)
         {
             if (!ModelState.IsValid)
@@ -81,25 +81,15 @@ namespace needy_api.Controllers
             return await _needLogic.UpdateNeedAsync(parameters) ? Ok("Solicitud de necesidad actualizada con éxito") : BadRequest("Ha ocurrido un error");
         }
 
-        [HttpDelete("delete-need")]
-        public async Task<IActionResult> DeleteNeedAsync([FromBody] int needId)
+        [HttpDelete("delete-need/{needId}")]
+        public async Task<IActionResult> DeleteNeedAsync(int needId)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState.Values);
-            }
-
             return await _needLogic.DeleteNeedAsync(needId) ? Ok("Solicitud de necesidad borrada con éxito") : BadRequest("Ha ocurrido un error");
         }
 
-        [HttpPost("apply-need")]
-        public async Task<IActionResult> ApplyNeedAsync([FromBody] int needId)
+        [HttpPost("apply-need/{needId}")]
+        public async Task<IActionResult> ApplyNeedAsync(int needId)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState.Values);
-            }
-
             ErrorStatus status = await _needLogic.ApplyNeedAsync(needId);
 
             switch (status)
@@ -149,7 +139,7 @@ namespace needy_api.Controllers
             }
         }
 
-        [HttpDelete("decline-applier")]
+        [HttpPut("decline-applier")]
         public async Task<IActionResult> DeclineApplierAsync([FromBody] ManageApplierParameters parameters)
         {
             if (!ModelState.IsValid)

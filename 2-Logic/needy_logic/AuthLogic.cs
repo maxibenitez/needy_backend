@@ -4,6 +4,8 @@ using needy_logic_abstraction;
 using needy_logic_abstraction.Parameters;
 using needy_logic_abstraction.Enumerables;
 using needy_dataAccess.Repositories;
+using System.Text.Json;
+using Microsoft.IdentityModel.Tokens;
 
 namespace needy_logic
 {
@@ -28,22 +30,28 @@ namespace needy_logic
 
         #region Implements IAuthorizationLogic
 
-        public async Task<string> LoginAsync(LoginParameters parameters)
+        public async Task<Session> LoginAsync(LoginParameters parameters)
         {
             UserData user = await _userRepository.GetUserByEmailAsync(parameters.Email);
-            string token = "";
 
             if (user is not null)
             {
                 if (BCrypt.Net.BCrypt.Verify(parameters.Password, user.Password))
                 {
-                    return await _tokenLogic.GenerateJwtToken(user);
+                    string token = await _tokenLogic.GenerateJwtToken(user);
+
+                    if (token.IsNullOrEmpty())
+                    {
+                        return null;
+                    }
+
+                    return await SetSession(token);
                 }
 
-                return token;
+                return null;
             }
 
-            return token;
+            return null;
         }
 
         public async Task<ErrorStatus> RegisterAsync(RegisterParameters parameters)
@@ -93,6 +101,16 @@ namespace needy_logic
             UserData user = await _userRepository.GetUserByEmailAsync(email);
 
             return user is not null ? true : false;
+        }
+
+        private async Task<Session> SetSession(string token)
+        {
+            var userSession = new Session { 
+                Token = JsonSerializer.Serialize(token),
+                ExpiresIn = DateTime.UtcNow.AddSeconds(7200),
+            };
+
+            return userSession;
         }
 
         #endregion

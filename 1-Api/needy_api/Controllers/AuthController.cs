@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using needy_dto;
 using needy_logic_abstraction;
 using needy_logic_abstraction.Enumerables;
 using needy_logic_abstraction.Parameters;
 using System.Net;
+using System.Text.Json;
 
 namespace needy_api.Controllers
 {
@@ -36,14 +38,14 @@ namespace needy_api.Controllers
                 return BadRequest(ModelState.Values);
             }
 
-            string token = await _authorizationLogic.LoginAsync(parameters);
+            Session userSession = await _authorizationLogic.LoginAsync(parameters);
 
-            if (token.IsNullOrEmpty())
+            if (userSession == null)
             {
-                return BadRequest("Nombre de usuario o contraseña incorrectos");
+                return BadRequest("Nombre de usuario y/o contraseña incorrectos");
             }
 
-            return Ok(token);
+            return Ok(userSession);
         }
 
         [HttpPost("register")]

@@ -465,7 +465,7 @@ namespace needy_dataAccess.Repositories
                 Status = (string)reader["Status"],
                 Description = reader.IsDBNull(reader.GetOrdinal("Description")) ? null : (string?)reader["Description"],
                 CreationDate = (DateTime)reader["CreationDate"],
-                NeedDate = reader.IsDBNull(reader.GetOrdinal("NeedDate")) ? null : (DateTime?)reader["NeedDate"],
+                NeedDate = (DateTime)reader["NeedDate"],
                 AcceptedDate = reader.IsDBNull(reader.GetOrdinal("AcceptedDate")) ? null : (DateTime?)reader["AcceptedDate"],
                 NeedAddress = (string)reader["NeedAddress"],
                 Modality = (string)reader["Modality"],

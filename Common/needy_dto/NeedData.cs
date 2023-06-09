@@ -14,7 +14,7 @@
 
         public DateTime CreationDate { get; set; }
 
-        public DateTime? NeedDate { get; set; }
+        public DateTime NeedDate { get; set; }
 
         public DateTime? AcceptedDate { get; set; }
 

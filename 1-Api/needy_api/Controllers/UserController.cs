@@ -39,7 +39,7 @@ namespace needy_api.Controllers
             return Ok(await _userLogic.GetUsersBySkillAsync(skillId));
         }
 
-        [HttpGet("get-user-by-ci")]
+        [HttpPost("get-user-by-ci")]
         public async Task<IActionResult> GetUserByCIAsync([FromBody] string userCI)
         {
             if (!ModelState.IsValid)
