@@ -3,7 +3,6 @@ using needy_dto;
 using needy_logic_abstraction;
 using needy_logic_abstraction.Parameters;
 using needy_logic_abstraction.Enumerables;
-using needy_dataAccess.Repositories;
 using System.Text.Json;
 using Microsoft.IdentityModel.Tokens;
 
@@ -45,7 +44,7 @@ namespace needy_logic
                         return null;
                     }
 
-                    return await SetSession(token);
+                    return SetSession(token, user.CI);
                 }
 
                 return null;
@@ -103,11 +102,12 @@ namespace needy_logic
             return user is not null ? true : false;
         }
 
-        private async Task<Session> SetSession(string token)
+        private Session SetSession(string token, string userCI)
         {
             var userSession = new Session { 
                 Token = JsonSerializer.Serialize(token),
                 ExpiresIn = DateTime.UtcNow.AddSeconds(7200),
+                userCI = userCI,
             };
 
             return userSession;
