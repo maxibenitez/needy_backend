@@ -58,7 +58,7 @@ namespace needy_api.Controllers
                 return BadRequest(ModelState.Values);
             }
 
-            return await _userLogic.UpdateUserAsync(parameters) ? Ok("Datos actualizados con éxito") : BadRequest("Ha ocurrido un error");
+            return await _userLogic.UpdateUserAsync(parameters) ? Ok() : BadRequest();
         }
 
         #endregion

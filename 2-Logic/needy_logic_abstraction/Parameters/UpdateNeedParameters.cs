@@ -9,28 +9,28 @@ namespace needy_logic_abstraction.Parameters
         public int NeedId { get; set; }
 
         [Required]
-        [StringLength(150, ErrorMessage = "Descripción no debe superar los 150 caracteres")]
+        [StringLength(150, ErrorMessage = "Description must have less than 150 characters")]
         public string Description { get; set; }
 
-        [Required(ErrorMessage = "La dirección es requerida")]
+        [Required(ErrorMessage = "Need Address is required")]
         public string NeedAddress { get; set; }
 
-        [Required(ErrorMessage = "La modalidad es requerida")]
-        [RegularExpression(@"^(Remota|Domicilio|Visita)$")]
+        [Required(ErrorMessage = "Modality is required")]
+        [RegularExpression(@"^(Remote|Home|Visit)$")]
         public string Modality { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
         public DateTime NeedDate { get; set; }
 
-        [Required(ErrorMessage = "Las habilidades solicitadas son requeridas")]
+        [Required(ErrorMessage = "Skills are required")]
         public IEnumerable<int> RequestedSkillsId { get; set; }
 
         IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             if (NeedDate <= DateTime.Today.AddDays(7))
             {
-                yield return new ValidationResult("La fecha de la necesidad debe ser al menos 7 días posterior a la fecha de hoy");
+                yield return new ValidationResult("Need Date must be at least 7 days after today's date");
             }
         }
     }

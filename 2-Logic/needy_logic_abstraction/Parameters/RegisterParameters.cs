@@ -4,46 +4,46 @@ namespace needy_logic_abstraction.Parameters
 {
     public class RegisterParameters : IValidatableObject
     {
-        [Required(ErrorMessage = "La cédula requerida")]
-        [StringLength(8, MinimumLength = 8, ErrorMessage = "La cédula debe contener 8 digitos")]
-        [RegularExpression("^[0-9]+$", ErrorMessage = "La cédula debe contener solo números")]
+        [Required(ErrorMessage = "CI is required")]
+        [StringLength(8, MinimumLength = 8, ErrorMessage = "CI must contain 8 digits")]
+        [RegularExpression("^[0-9]+$", ErrorMessage = "CI must contain only numbers")]
         public string CI { get; set; }
 
-        [Required(ErrorMessage = "El nombre requerido")]
+        [Required(ErrorMessage = "First Name is required")]
         public string FirstName { get; set; }
 
-        [Required(ErrorMessage = "El apellido requerido")]
+        [Required(ErrorMessage = "Last Name is required")]
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = "La dirección requerida")]
+        [Required(ErrorMessage = "Address is required")]
         public string Address { get; set; }
 
-        [Required(ErrorMessage = "La zona requerida")]
+        [Required(ErrorMessage = "Zone is requireda")]
         public string Zone { get; set; }
 
-        [Required(ErrorMessage = "El teléfono requerido")]
-        [StringLength(9, MinimumLength = 9, ErrorMessage = "El teléfono debe contener 9 digitos")]
-        [RegularExpression("^[0-9]+$", ErrorMessage = "El teléfono debe contener solo números")]
+        [Required(ErrorMessage = "Phone is required")]
+        [StringLength(9, MinimumLength = 9, ErrorMessage = "Phone must contain 9 digits")]
+        [RegularExpression("^[0-9]+$", ErrorMessage = "Phone must contain only numbers")]
         public string Phone { get; set; }
 
-        [Required(ErrorMessage = "El género requerido")]
-        [RegularExpression(@"^(Masculino|Femenino|Otros)$")]
+        [Required(ErrorMessage = "Gender is required")]
+        [RegularExpression(@"^(Male|Female|Other)$")]
         public string Gender { get; set; }
 
-        [Required(ErrorMessage = "La fecha de nacimiento requerida")]
+        [Required(ErrorMessage = "BirthDate is required")]
         [DataType(DataType.Date)]
         public DateTime BirthDate { get; set; }
 
-        [Required(ErrorMessage = "El email es requerido")]
+        [Required(ErrorMessage = "Email is required")]
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "La contraseña es requerida")]
-        [StringLength(8, MinimumLength = 4, ErrorMessage = "La contraseña debe contener entre 4 y 8 caracteres")]
+        [Required(ErrorMessage = "Password is required")]
+        [StringLength(20, MinimumLength = 4, ErrorMessage = "Password must have more than 4 characters")]
         public string Password { get; set; }
 
-        [Required(ErrorMessage = "La descripción es requerido")]
-        [StringLength(150, ErrorMessage = "La descripción no debe superar los 150 caracteres")]
+        [Required(ErrorMessage = "About Me is required")]
+        [StringLength(150, ErrorMessage = "About Me must have less than 150 characters")]
         public string AboutMe { get; set; }
 
         public IEnumerable<int> SkillsId { get; set; }
@@ -60,7 +60,7 @@ namespace needy_logic_abstraction.Parameters
 
             if (age < 18)
             {
-                yield return new ValidationResult("Debe ser mayor de 18 años");
+                yield return new ValidationResult("You must be over 18 years old");
             }
         }
     }

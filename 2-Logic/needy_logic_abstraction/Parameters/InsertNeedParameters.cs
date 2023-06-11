@@ -4,29 +4,29 @@ namespace needy_logic_abstraction.Parameters
 {
     public class InsertNeedParameters : IValidatableObject
     {
-        [Required(ErrorMessage = "La descripción es requerida")]
-        [StringLength(150, ErrorMessage = "La descripción no debe superar los 150 caracteres")]
+        [Required(ErrorMessage = "Description is required")]
+        [StringLength(150, ErrorMessage = "Description must have less than 150 characters")]
         public string Description { get; set; }
 
-        [Required(ErrorMessage = "La dirección es requerida")]
+        [Required(ErrorMessage = "Need Address is required")]
         public string NeedAddress { get; set; }
 
-        [Required(ErrorMessage = "La modalidad es requerida")]
-        [RegularExpression(@"^(Remota|Domicilio|Visita)$")]
+        [Required(ErrorMessage = "Modality is required")]
+        [RegularExpression(@"^(Remote|Home|Visit)$")]
         public string Modality { get; set; }
 
-        [Required(ErrorMessage = "La fecha de ayuda es requerida")]
+        [Required(ErrorMessage = "Need Date is required")]
         [DataType(DataType.Date)]
         public DateTime NeedDate { get; set; }
 
-        [Required(ErrorMessage = "Las habilidades solicitadas son requeridas")]
+        [Required(ErrorMessage = "Skills are required")]
         public IEnumerable<int> RequestedSkillsId { get; set; }
 
         IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
-            if (NeedDate <= DateTime.Today)
+            if (NeedDate <= DateTime.Today.AddDays(7))
             {
-                yield return new ValidationResult("La fecha de ayuda debe ser mayor a la fecha de hoy");
+                yield return new ValidationResult("Need Date must be at least 7 days after today's date");
             }
         }
     }

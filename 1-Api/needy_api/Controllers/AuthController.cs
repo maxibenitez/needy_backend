@@ -42,7 +42,7 @@ namespace needy_api.Controllers
 
             if (userSession == null)
             {
-                return BadRequest("Nombre de usuario y/o contraseña incorrectos");
+                return BadRequest("Invalid email or password");
             }
 
             return Ok(userSession);
@@ -61,13 +61,13 @@ namespace needy_api.Controllers
             switch (status)
             {
                 case ErrorStatus.Success:
-                    return Ok("Registro exitoso");
+                    return Ok(JsonSerializer.Serialize("Success signup"));
                 case ErrorStatus.UserAlreadyExist:
-                    return BadRequest("Ya existe un usuario registrado con esa CI");
+                    return BadRequest("Already exists a registered user with that CI");
                 case ErrorStatus.EmailAlreadyExist:
-                    return BadRequest("Ya existe un usuario registrado con ese email");
+                    return BadRequest("Already exists a registered user with that email");
                 default:
-                    return StatusCode((int)HttpStatusCode.InternalServerError, "Ha ocurrido un error");
+                    return StatusCode((int)HttpStatusCode.InternalServerError, "Upss...! An error has occurred");
             }
         }
 

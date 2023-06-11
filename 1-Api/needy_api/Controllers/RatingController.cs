@@ -46,7 +46,7 @@ namespace needy_api.Controllers
                 return BadRequest(ModelState.Values);
             }
 
-            return await _ratingLogic.InsertRatingAsync(parameters) ? Ok("Calificación realizada con éxito") : BadRequest("Ha ocurrido un error");
+            return await _ratingLogic.InsertRatingAsync(parameters) ? Ok() : BadRequest();
         }
 
         #endregion

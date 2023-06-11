@@ -85,6 +85,25 @@ namespace needy_logic
             return null;  
         }
 
+        public async Task<IEnumerable<Need>> GetUserCreatedNeedsAsync(string userCI)
+        {
+            List<NeedData> data = (await _needRepository.GetUserCreatedNeedsAsync(userCI)).ToList();
+
+            if (data != null)
+            {
+                List<Need> needs = new List<Need>();
+
+                foreach (NeedData need in data)
+                {
+                    needs.Add(await NeedBuilderAsync(need));
+                }
+
+                return needs;
+            }
+
+            return null;
+        }
+
         public async Task<IEnumerable<Need>> GetUserAppliedNeedsAsync(string userCI)
         {
             List<NeedData> data = (await _needRepository.GetUserAppliedNeedsAsync(userCI)).ToList();

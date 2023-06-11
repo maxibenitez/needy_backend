@@ -194,6 +194,34 @@ namespace needy_dataAccess.Repositories
             }
         }
 
+        public async Task<IEnumerable<NeedData>> GetUserCreatedNeedsAsync(string userCI)
+        {
+            using (var connection = _dbConnection.CreateConnection())
+            {
+                await connection.OpenAsync();
+
+                var query = @"
+                            SELECT *
+                            FROM public.""Needs""
+                            WHERE ""RequestorCI"" = @UserCI";
+
+                var command = new NpgsqlCommand(query, connection);
+                command.Parameters.AddWithValue("@UserCI", userCI);
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    var needDataList = new List<NeedData>();
+
+                    while (await reader.ReadAsync())
+                    {
+                        needDataList.Add(await NeedDataBuilderAsync(reader));
+                    }
+
+                    return needDataList;
+                }
+            }
+        }
+
         public async Task<IEnumerable<NeedData>> GetUserAppliedNeedsAsync(string userCI)
         {
             using (var connection = _dbConnection.CreateConnection())

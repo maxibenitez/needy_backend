@@ -7,18 +7,18 @@ namespace needy_logic_abstraction.Parameters
         [Range(1, int.MaxValue)]
         public int NeedId { get; set; }
 
-        [Required]
-        [StringLength(8, MinimumLength = 8, ErrorMessage = "La cédula debe contener 8 digitos")]
-        [RegularExpression("^[0-9]+$")]
+        [Required(ErrorMessage = "Receiver CI is required")]
+        [StringLength(8, MinimumLength = 8, ErrorMessage = "CI must contain 8 digits")]
+        [RegularExpression("^[0-9]+$", ErrorMessage = "CI must contain only numbers")]
         public string ReceiverCI { get; set; }
 
-        [Required(ErrorMessage = "La calificación es requerida")]
-        [Range(1.0, 5.0, ErrorMessage = "La calificación debe estar entre 1 y 5")]
+        [Required(ErrorMessage = "Rating is required")]
+        [Range(1.0, 5.0, ErrorMessage = "Rating must be between 1 and 5")]
         [RegularExpression(@"^([1-5](\.[05])?)$")]
         public double Stars { get; set; }
 
-        [Required(ErrorMessage = "El comentario es requerido")]
-        [StringLength(150, ErrorMessage = "El comentario no debe superar los 150 caracteres")]
+        [Required(ErrorMessage = "Comment is required")]
+        [StringLength(150, ErrorMessage = "Comment must have less than 150 characters")]
         public string Comment { get; set; }
     }
 }

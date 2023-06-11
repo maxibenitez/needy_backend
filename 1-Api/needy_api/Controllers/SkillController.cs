@@ -6,7 +6,6 @@ namespace needy_api.Controllers
 {
     [Route("api/skills")]
     [ApiController]
-    [Authorize]
     public class SkillController : Controller
     {
         #region Properties and Fields
