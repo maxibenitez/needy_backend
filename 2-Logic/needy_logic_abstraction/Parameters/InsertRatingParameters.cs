@@ -4,6 +4,7 @@ namespace needy_logic_abstraction.Parameters
 {
     public class InsertRatingParameters
     {
+        [Required]
         [Range(1, int.MaxValue)]
         public int NeedId { get; set; }
 

@@ -83,7 +83,6 @@ namespace needy_dataAccess.Repositories
         {
             var rating = new Rating
             {
-                Id = (int)reader["Id"],
                 GiverCI = (string)reader["GiverCI"],
                 ReceiverCI = (string)reader["ReceiverCI"],
                 NeedId = (int)reader["NeedId"],

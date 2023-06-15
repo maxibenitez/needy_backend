@@ -20,6 +20,6 @@
 
         public double? AvgRating { get; set; }
 
-        public string? AboutMe { get; set; }
+        public string AboutMe { get; set; }
     }
 }

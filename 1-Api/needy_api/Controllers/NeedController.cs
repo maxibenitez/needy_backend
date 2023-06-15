@@ -4,7 +4,6 @@ using needy_logic_abstraction;
 using Microsoft.AspNetCore.Authorization;
 using needy_logic_abstraction.Enumerables;
 using System.Net;
-using needy_logic;
 
 namespace needy_api.Controllers
 {

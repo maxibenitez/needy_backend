@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using needy_logic_abstraction;
 
 namespace needy_api.Controllers
@@ -30,7 +29,6 @@ namespace needy_api.Controllers
         {
             return Ok(await _skillLogic.GetSkillsAsync());
         }
-
 
         #endregion
     }
