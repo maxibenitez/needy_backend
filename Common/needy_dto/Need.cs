@@ -4,6 +4,8 @@
     {
         public int Id { get; set; }
 
+        public string Title { get; set; }
+
         public User Requestor { get; set; }
 
         public IEnumerable<User>? Appliers { get; set; }

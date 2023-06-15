@@ -262,17 +262,18 @@ namespace needy_dataAccess.Repositories
                     try
                     {
                         var query = @"
-                        INSERT INTO public.""Needs"" (""RequestorCI"", ""Description"", ""CreationDate"", 
+                        INSERT INTO public.""Needs"" (""Title"", ""RequestorCI"", ""Description"", ""CreationDate"", 
                                                     ""NeedDate"", ""Status"", ""Modality"", ""NeedAddress"")
-                        VALUES (@RequestorCI, @Description, @CreationDate, @NeedDate, @Status, @Modality, @NeedAddress);
+                        VALUES (@Title, @RequestorCI, @Description, @CreationDate, @NeedDate, @Status, @Modality, @NeedAddress);
                         SELECT LASTVAL();";
 
                         var command = new NpgsqlCommand(query, connection);
+                        command.Parameters.AddWithValue("@Title", parameters.Title);
                         command.Parameters.AddWithValue("@RequestorCI", userCI);
                         command.Parameters.AddWithValue("@Description", parameters.Description);
                         command.Parameters.AddWithValue("@CreationDate", DateTime.Now);
                         command.Parameters.AddWithValue("@NeedDate", parameters.NeedDate);
-                        command.Parameters.AddWithValue("@Status", "En espera");
+                        command.Parameters.AddWithValue("@Status", "Waiting");
                         command.Parameters.AddWithValue("@Modality", parameters.Modality);
                         command.Parameters.AddWithValue("@NeedAddress", parameters.NeedAddress);
 
@@ -319,13 +320,17 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                         UPDATE public.""Needs""
-                        SET ""Description"" = @Description,
+                        SET ""Title"" = @Title,
+                            ""Description"" = @Description,
+                            ""Modality"" = @Modality,
                             ""NeedDate"" = @NeedDate
                         WHERE ""Id"" = @NeedId";
 
                 var command = new NpgsqlCommand(query, connection);
                 command.Parameters.AddWithValue("@NeedId", parameters.NeedId);
+                command.Parameters.AddWithValue("@Title", parameters.Title);
                 command.Parameters.AddWithValue("@Description", parameters.Description);
+                command.Parameters.AddWithValue("@Modality", parameters.Modality);
                 command.Parameters.AddWithValue("@NeedDate", parameters.NeedDate);
 
                 var result = await command.ExecuteNonQueryAsync();
@@ -488,6 +493,7 @@ namespace needy_dataAccess.Repositories
             var need = new NeedData
             {
                 Id = (int)reader["Id"],
+                Title = (string)reader["Title"],
                 RequestorCI = (string)reader["RequestorCI"],
                 AcceptedApplierCI = reader.IsDBNull(reader.GetOrdinal("AcceptedApplierCI")) ? null : (string?)reader["AcceptedApplierCI"],
                 Status = (string)reader["Status"],

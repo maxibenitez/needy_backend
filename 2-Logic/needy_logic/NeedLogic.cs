@@ -209,7 +209,7 @@ namespace needy_logic
 
                 if(appliersCI.Contains(parameters.ApplierCI))
                 {
-                    if(await ChangeStatusAsync(parameters.NeedId, "Aceptada") &&
+                    if(await ChangeStatusAsync(parameters.NeedId, "Accepted") &&
                         await _needRepository.AcceptApplierAsync(parameters))
                     {
                         return ErrorStatus.Success;
@@ -238,6 +238,7 @@ namespace needy_logic
             var need = new Need
             {
                 Id = data.Id,
+                Title = data.Title,
                 Status = data.Status,
                 Description = data.Description,
                 CreationDate = data.CreationDate,

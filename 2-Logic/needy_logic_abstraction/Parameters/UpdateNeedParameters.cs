@@ -8,6 +8,10 @@ namespace needy_logic_abstraction.Parameters
         [Range(1, int.MaxValue)]
         public int NeedId { get; set; }
 
+        [Required(ErrorMessage = "Title is required")]
+        [StringLength(20, ErrorMessage = "Title must have less than 20 characters")]
+        public string Title { get; set; }
+
         [Required]
         [StringLength(150, ErrorMessage = "Description must have less than 150 characters")]
         public string Description { get; set; }
