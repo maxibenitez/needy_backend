@@ -50,6 +50,17 @@ namespace needy_api.Controllers
             return Ok(await _userLogic.GetUserByCIAsync(userCI));
         }
 
+        [HttpPost("get-users-by-skill-name")]
+        public async Task<IActionResult> GetUsersBySkillNameAsync([FromBody] string skillName)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+
+            return Ok(await _userLogic.GetUsersBySkillNameAsync(skillName));
+        }
+
         [HttpPut("update-user")]
         public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserParameters parameters)
         {

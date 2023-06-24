@@ -11,6 +11,8 @@ namespace needy_dataAccess.Interfaces
 
         Task<UserData> GetUserByCIAsync(string userCI);
 
+        Task<IEnumerable<UserData>> GetUsersBySkillNameAsync(string skillName);
+
         Task<UserData> GetUserByEmailAsync(string email);
 
         Task<bool> InsertUserAsync(RegisterParameters parameters);

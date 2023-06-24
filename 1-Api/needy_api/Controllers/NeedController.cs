@@ -41,6 +41,17 @@ namespace needy_api.Controllers
             return Ok(await _needLogic.GetNeedsBySkillAsync(skillId));
         }
 
+        [HttpPost("get-needs-by-skill-name")]
+        public async Task<IActionResult> GetNeedsBySkillNameAsync([FromBody] string skillName)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+
+            return Ok(await _needLogic.GetNeedsBySkillNameAsync(skillName));
+        }
+
         [HttpGet("get-need-by-id/{needId}")]
         public async Task<IActionResult> GetNeedByIdAsync(int needId)
         {
@@ -115,16 +126,22 @@ namespace needy_api.Controllers
             }
         }
 
-        [HttpDelete("unapply-need")]
-        public async Task<IActionResult> UnapplyNeedAsync([FromBody] int needId)
+        [HttpDelete("unapply-need/{needId}")]
+        public async Task<IActionResult> UnapplyNeedAsync(int needId)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState.Values);
-            }
-
             return await _needLogic.UnapplyNeedAsync(needId) ? Ok() : BadRequest();
         }
+
+        //[HttpDelete("unapply-need")]
+        //public async Task<IActionResult> UnapplyNeedAsync([FromBody] int needId)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState.Values);
+        //    }
+
+        //    return await _needLogic.UnapplyNeedAsync(needId) ? Ok() : BadRequest();
+        //}
 
         [HttpPut("accept-applier")]
         public async Task<IActionResult> AcceptApplierAsync([FromBody] ManageApplierParameters parameters)

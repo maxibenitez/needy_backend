@@ -57,20 +57,27 @@ namespace needy_logic
         public async Task<IEnumerable<Need>> GetNeedsBySkillAsync(int skillId)
         {
             List<NeedData> data = (await _needRepository.GetNeedsBySkillAsync(skillId)).ToList();
+            List<Need> needs = new List<Need>();
 
-            if (data != null)
+            foreach(NeedData need in data)
             {
-                List<Need> needs = new List<Need>();
-
-                foreach(NeedData need in data)
-                {
-                    needs.Add(await NeedBuilderAsync(need));
-                }
-
-                return needs;
+                needs.Add(await NeedBuilderAsync(need));
             }
 
-            return null;
+            return needs;
+        }
+
+        public async Task<IEnumerable<Need>> GetNeedsBySkillNameAsync(string skillName)
+        {
+            List<NeedData> data = (await _needRepository.GetNeedsBySkillNameAsync(skillName)).ToList();
+            List<Need> needs = new List<Need>();
+
+            foreach (NeedData need in data)
+            {
+                needs.Add(await NeedBuilderAsync(need));
+            }
+
+            return needs;
         }
 
         public async Task<Need> GetNeedByIdAsync(int needId)
@@ -185,7 +192,7 @@ namespace needy_logic
             {
                 return ErrorStatus.NotHasRequiredSkills;
             }
-
+    
             if(!await _needRepository.ApplyNeedAsync(needId, applierCI))
             {
                 return ErrorStatus.InternalServerError;

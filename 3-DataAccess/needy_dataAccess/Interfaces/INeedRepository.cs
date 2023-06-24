@@ -9,6 +9,8 @@ namespace needy_dataAccess.Interfaces
 
         Task<IEnumerable<NeedData>> GetNeedsBySkillAsync(int skillId);
 
+        Task<IEnumerable<NeedData>> GetNeedsBySkillNameAsync(string skillName);
+
         Task<NeedData> GetNeedByIdAsync(int needId);
 
         Task<IEnumerable<string>> GetNeedAppliersAsync(int needId);

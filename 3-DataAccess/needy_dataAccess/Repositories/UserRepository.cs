@@ -105,6 +105,49 @@ namespace needy_dataAccess.Repositories
             }
         }
 
+        public async Task<IEnumerable<UserData>> GetUsersBySkillNameAsync(string skillName)
+        {
+            using (var connection = _dbConnection.CreateConnection())
+            {
+                await connection.OpenAsync();
+
+                var query = "";
+
+                if (!string.IsNullOrEmpty(skillName))
+                {
+                    query = @"
+                            SELECT u.*
+                            FROM public.""Users"" u
+                            INNER JOIN public.""UsersSkills"" us ON u.""CI"" = us.""UserCI""
+                            INNER JOIN public.""Skills"" s ON us.""SkillId"" = s.""Id""
+                            WHERE s.""Name"" LIKE '%' || @SkillName || '%'";
+                } 
+                else
+                {
+                    query = @"
+                            SELECT u.*
+                            FROM public.""Users"" u
+                            INNER JOIN public.""UsersSkills"" us ON u.""CI"" = us.""UserCI""
+                            INNER JOIN public.""Skills"" s ON us.""SkillId"" = s.""Id""";
+                }
+
+                var command = new NpgsqlCommand(query, connection);
+                command.Parameters.AddWithValue("@SkillName", skillName);
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    var users = new List<UserData>();
+
+                    while (await reader.ReadAsync())
+                    {
+                        users.Add(await UserBuilderAsync(reader));
+                    }
+
+                    return users;
+                }
+            }
+        }
+
         public async Task<UserData> GetUserByEmailAsync(string email)
         {
             using (var connection = _dbConnection.CreateConnection())

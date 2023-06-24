@@ -10,6 +10,8 @@ namespace needy_logic_abstraction
 
         Task<IEnumerable<Need>> GetNeedsBySkillAsync(int skillId);
 
+        Task<IEnumerable<Need>> GetNeedsBySkillNameAsync(string skillName);
+
         Task<Need> GetNeedByIdAsync(int needId);
 
         Task<IEnumerable<Need>> GetUserCreatedNeedsAsync(string userCI);

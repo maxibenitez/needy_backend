@@ -11,6 +11,8 @@ namespace needy_logic_abstraction
 
         Task<User> GetUserByCIAsync(string userCI);
 
+        Task<IEnumerable<User>> GetUsersBySkillNameAsync(string skillName);
+
         Task<bool> UpdateUserAsync(UpdateUserParameters parameters);
     }
 }

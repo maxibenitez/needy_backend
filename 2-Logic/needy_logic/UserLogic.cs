@@ -66,6 +66,19 @@ namespace needy_logic
             return await UserBuilderAsync(data);
         }
 
+        public async Task<IEnumerable<User>> GetUsersBySkillNameAsync(string skillName)
+        {
+            List<UserData> data = (await _userRepository.GetUsersBySkillNameAsync(skillName)).ToList();
+            List<User> users = new List<User>();
+
+            foreach (UserData user in data)
+            {
+                users.Add(await UserBuilderAsync(user));
+            }
+
+            return users;
+        }
+
         public async Task<bool> UpdateUserAsync(UpdateUserParameters parameters)
         {
             string userCI = await _tokenLogic.GetUserCIFromToken();
@@ -107,6 +120,7 @@ namespace needy_logic
                 Phone = data.Phone,
                 Age = await GetUserAgeAsync(data.BirthDate),
                 AboutMe = data.AboutMe,
+                Email = data.Email,
             };
 
             user.Skills = await _skillRepository.GetUserSkillsAsync(data.CI);

@@ -78,6 +78,49 @@ namespace needy_dataAccess.Repositories
             }
         }
 
+        public async Task<IEnumerable<NeedData>> GetNeedsBySkillNameAsync(string skillName)
+        {
+            using (var connection = _dbConnection.CreateConnection())
+            {
+                await connection.OpenAsync();
+
+                var query = "";
+
+                if (!string.IsNullOrEmpty(skillName))
+                {
+                    query = @"
+                            SELECT n.*
+                            FROM public.""Needs"" n
+                            INNER JOIN public.""NeedsSkills"" ns ON n.""Id"" = ns.""NeedId""
+                            INNER JOIN public.""Skills"" s ON ns.""SkillId"" = s.""Id""
+                            WHERE s.""Name"" LIKE '%' || @SkillName || '%'";
+                }
+                else
+                {
+                    query = @"
+                            SELECT n.*
+                            FROM public.""Needs"" n
+                            INNER JOIN public.""NeedsSkills"" ns ON n.""Id"" = ns.""NeedId""
+                            INNER JOIN public.""Skills"" s ON ns.""SkillId"" = s.""Id""";
+                }
+
+                var command = new NpgsqlCommand(query, connection);
+                command.Parameters.AddWithValue("@SkillName", skillName);
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    var needDataList = new List<NeedData>();
+
+                    while (await reader.ReadAsync())
+                    {
+                        needDataList.Add(await NeedDataBuilderAsync(reader));
+                    }
+
+                    return needDataList;
+                }
+            }
+        }
+
         public async Task<NeedData> GetNeedByIdAsync(int needId)
         {
             using (var connection = _dbConnection.CreateConnection())
