@@ -132,17 +132,6 @@ namespace needy_api.Controllers
             return await _needLogic.UnapplyNeedAsync(needId) ? Ok() : BadRequest();
         }
 
-        //[HttpDelete("unapply-need")]
-        //public async Task<IActionResult> UnapplyNeedAsync([FromBody] int needId)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState.Values);
-        //    }
-
-        //    return await _needLogic.UnapplyNeedAsync(needId) ? Ok() : BadRequest();
-        //}
-
         [HttpPut("accept-applier")]
         public async Task<IActionResult> AcceptApplierAsync([FromBody] ManageApplierParameters parameters)
         {
