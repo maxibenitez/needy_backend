@@ -116,13 +116,13 @@ namespace needy_api.Controllers
             switch (status)
             {
                 case ErrorStatus.Success:
-                    return Ok("Se ha aplicado con éxito");
+                    return Ok("Apply success");
                 case ErrorStatus.IsNeedRequestor:
-                    return BadRequest("No puede aplicarse a una solicitud propia");
+                    return BadRequest("Cannot apply to own need");
                 case ErrorStatus.NotHasRequiredSkills:
-                    return BadRequest("No cumple con las habilidades requeridas");
+                    return BadRequest("Not have the required skills");
                 default:
-                    return StatusCode((int)HttpStatusCode.InternalServerError, "Ha ocurrido un error");
+                    return StatusCode((int)HttpStatusCode.InternalServerError, "Upss...! An error has occurred");
             }
         }
 
