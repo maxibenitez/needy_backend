@@ -173,6 +173,8 @@ namespace needy_logic
         {
             await _needRepository.DeleteNeedAppliersAsync(needId);
 
+            await _needRepository.DeleteNeedSkillsAsync(needId);
+
             return await _needRepository.DeleteNeedAsync(needId);
         }
 
