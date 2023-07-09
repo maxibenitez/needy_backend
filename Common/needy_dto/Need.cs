@@ -26,6 +26,8 @@
 
         public string NeedAddress { get; set; }
 
+        public string NeedZone { get; set; }
+
         public string Modality { get; set; }
     }
 }

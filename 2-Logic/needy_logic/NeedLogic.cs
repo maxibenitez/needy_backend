@@ -37,7 +37,9 @@ namespace needy_logic
 
         public async Task<IEnumerable<Need>> GetNeedsAsync()
         {
-            List<NeedData> data = (await _needRepository.GetNeedsAsync()).ToList();
+            string userCI = await _tokenLogic.GetUserCIFromToken();
+
+            List<NeedData> data = (await _needRepository.GetNeedsAsync(userCI)).ToList();
 
             if (data != null)
             {
@@ -56,7 +58,9 @@ namespace needy_logic
 
         public async Task<IEnumerable<Need>> GetNeedsBySkillAsync(int skillId)
         {
-            List<NeedData> data = (await _needRepository.GetNeedsBySkillAsync(skillId)).ToList();
+            string userCI = await _tokenLogic.GetUserCIFromToken();
+
+            List<NeedData> data = (await _needRepository.GetNeedsBySkillAsync(skillId, userCI)).ToList();
             List<Need> needs = new List<Need>();
 
             foreach(NeedData need in data)
@@ -69,7 +73,9 @@ namespace needy_logic
 
         public async Task<IEnumerable<Need>> GetNeedsBySkillNameAsync(string skillName)
         {
-            List<NeedData> data = (await _needRepository.GetNeedsBySkillNameAsync(skillName)).ToList();
+            string userCI = await _tokenLogic.GetUserCIFromToken();
+
+            List<NeedData> data = (await _needRepository.GetNeedsBySkillNameAsync(skillName, userCI)).ToList();
             List<Need> needs = new List<Need>();
 
             foreach (NeedData need in data)
@@ -254,6 +260,7 @@ namespace needy_logic
                 NeedDate = data.NeedDate,
                 AcceptedDate = data.AcceptedDate,
                 NeedAddress = data.NeedAddress,
+                NeedZone = data.NeedZone,
                 Modality = data.Modality,
             };
 

@@ -24,33 +24,7 @@ namespace needy_dataAccess.Repositories
 
         #region Implments INeedRepository
 
-        public async Task<IEnumerable<NeedData>> GetNeedsAsync()
-        {
-            using (var connection = _dbConnection.CreateConnection())
-            {
-                await connection.OpenAsync();
-
-                var query = @"
-                            SELECT *
-                            FROM public.""Needs""";
-
-                var command = new NpgsqlCommand(query, connection);
-
-                using (var reader = await command.ExecuteReaderAsync())
-                {
-                    var needDataList = new List<NeedData>();
-
-                    while (await reader.ReadAsync())
-                    {
-                        needDataList.Add(await NeedDataBuilderAsync(reader));
-                    }
-
-                    return needDataList;
-                }
-            }
-        }
-
-        public async Task<IEnumerable<NeedData>> GetNeedsBySkillAsync(int skillId)
+        public async Task<IEnumerable<NeedData>> GetNeedsAsync(string userCI)
         {
             using (var connection = _dbConnection.CreateConnection())
             {
@@ -59,10 +33,11 @@ namespace needy_dataAccess.Repositories
                 var query = @"
                             SELECT *
                             FROM public.""Needs""
-                            WHERE ""RequestedSkillId"" = @SkillId";
+                            WHERE ""RequestorCI"" <> @UserCI
+                            AND ""Status"" = 'Waiting'";
 
                 var command = new NpgsqlCommand(query, connection);
-                command.Parameters.AddWithValue("@SkillId", skillId);
+                command.Parameters.AddWithValue("@UserCI", userCI);
 
                 using (var reader = await command.ExecuteReaderAsync())
                 {
@@ -78,7 +53,38 @@ namespace needy_dataAccess.Repositories
             }
         }
 
-        public async Task<IEnumerable<NeedData>> GetNeedsBySkillNameAsync(string skillName)
+        public async Task<IEnumerable<NeedData>> GetNeedsBySkillAsync(int skillId, string userCI)
+        {
+            using (var connection = _dbConnection.CreateConnection())
+            {
+                await connection.OpenAsync();
+
+                var query = @"
+                            SELECT *
+                            FROM public.""Needs""
+                            WHERE ""RequestedSkillId"" = @SkillId
+                            AND ""RequestorCI"" <> @UserCI
+                            AND ""Status"" = 'Waiting'";
+
+                var command = new NpgsqlCommand(query, connection);
+                command.Parameters.AddWithValue("@SkillId", skillId);
+                command.Parameters.AddWithValue("@UserCI", userCI);
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    var needDataList = new List<NeedData>();
+
+                    while (await reader.ReadAsync())
+                    {
+                        needDataList.Add(await NeedDataBuilderAsync(reader));
+                    }
+
+                    return needDataList;
+                }
+            }
+        }
+
+        public async Task<IEnumerable<NeedData>> GetNeedsBySkillNameAsync(string skillName, string userCI)
         {
             using (var connection = _dbConnection.CreateConnection())
             {
@@ -93,7 +99,9 @@ namespace needy_dataAccess.Repositories
                             FROM public.""Needs"" n
                             INNER JOIN public.""NeedsSkills"" ns ON n.""Id"" = ns.""NeedId""
                             INNER JOIN public.""Skills"" s ON ns.""SkillId"" = s.""Id""
-                            WHERE s.""Name"" LIKE '%' || @SkillName || '%'";
+                            WHERE s.""Name"" LIKE '%' || @SkillName || '%'
+                            AND ""RequestorCI"" <> @UserCI
+                            AND ""Status"" = 'Waiting'";
                 }
                 else
                 {
@@ -101,11 +109,14 @@ namespace needy_dataAccess.Repositories
                             SELECT n.*
                             FROM public.""Needs"" n
                             INNER JOIN public.""NeedsSkills"" ns ON n.""Id"" = ns.""NeedId""
-                            INNER JOIN public.""Skills"" s ON ns.""SkillId"" = s.""Id""";
+                            INNER JOIN public.""Skills"" s ON ns.""SkillId"" = s.""Id""
+                            WHERE ""RequestorCI"" <> @UserCI
+                            AND ""Status"" = 'Waiting'";
                 }
 
                 var command = new NpgsqlCommand(query, connection);
                 command.Parameters.AddWithValue("@SkillName", skillName);
+                command.Parameters.AddWithValue("@UserCI", userCI);
 
                 using (var reader = await command.ExecuteReaderAsync())
                 {
@@ -246,7 +257,8 @@ namespace needy_dataAccess.Repositories
                 var query = @"
                             SELECT *
                             FROM public.""Needs""
-                            WHERE ""RequestorCI"" = @UserCI";
+                            WHERE ""RequestorCI"" = @UserCI
+                            AND ""Status"" IN ('Waiting', 'Completed')";
 
                 var command = new NpgsqlCommand(query, connection);
                 command.Parameters.AddWithValue("@UserCI", userCI);
@@ -545,6 +557,7 @@ namespace needy_dataAccess.Repositories
                 NeedDate = (DateTime)reader["NeedDate"],
                 AcceptedDate = reader.IsDBNull(reader.GetOrdinal("AcceptedDate")) ? null : (DateTime?)reader["AcceptedDate"],
                 NeedAddress = (string)reader["NeedAddress"],
+                NeedZone = (string)reader["NeedZone"],
                 Modality = (string)reader["Modality"],
             };
 

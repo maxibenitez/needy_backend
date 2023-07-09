@@ -24,7 +24,7 @@ namespace needy_dataAccess.Repositories
 
         #region Implments IUserRepository
 
-        public async Task<IEnumerable<UserData>> GetUsersAsync()
+        public async Task<IEnumerable<UserData>> GetUsersAsync(string userCI)
         {
             using (var connection = _dbConnection.CreateConnection())
             {
@@ -32,9 +32,11 @@ namespace needy_dataAccess.Repositories
 
                 var query = @"
                             SELECT *
-                            FROM public.""Users""";
+                            FROM public.""Users""
+                            WHERE ""CI"" <> @UserCI";
 
                 var command = new NpgsqlCommand(query, connection);
+                command.Parameters.AddWithValue("@UserCI", userCI);
 
                 using (var reader = await command.ExecuteReaderAsync())
                 {

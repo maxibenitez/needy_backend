@@ -15,6 +15,9 @@ namespace needy_logic_abstraction.Parameters
         [Required(ErrorMessage = "Need Address is required")]
         public string NeedAddress { get; set; }
 
+        [Required(ErrorMessage = "Need Zone is required")]
+        public string NeedZone { get; set; }
+
         [Required(ErrorMessage = "Modality is required")]
         [RegularExpression(@"^(Remote|Home|Visit)$")]
         public string Modality { get; set; }

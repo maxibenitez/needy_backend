@@ -5,11 +5,11 @@ namespace needy_dataAccess.Interfaces
 {
     public interface INeedRepository
     {
-        Task<IEnumerable<NeedData>> GetNeedsAsync();
+        Task<IEnumerable<NeedData>> GetNeedsAsync(string userCI);
 
-        Task<IEnumerable<NeedData>> GetNeedsBySkillAsync(int skillId);
+        Task<IEnumerable<NeedData>> GetNeedsBySkillAsync(int skillId, string userCI);
 
-        Task<IEnumerable<NeedData>> GetNeedsBySkillNameAsync(string skillName);
+        Task<IEnumerable<NeedData>> GetNeedsBySkillNameAsync(string skillName, string userCI);
 
         Task<NeedData> GetNeedByIdAsync(int needId);
 

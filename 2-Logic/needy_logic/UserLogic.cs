@@ -35,7 +35,9 @@ namespace needy_logic
 
         public async Task<IEnumerable<User>> GetUsersAsync()
         {
-            List<UserData> data = (await _userRepository.GetUsersAsync()).ToList();
+            string userCI = await _tokenLogic.GetUserCIFromToken();
+
+            List<UserData> data = (await _userRepository.GetUsersAsync(userCI)).ToList();
             List<User> users = new List<User>();
 
             foreach (UserData user in data)

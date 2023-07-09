@@ -42,7 +42,7 @@ namespace needy_logic
             if (await IsAcceptedApplier(parameters.NeedId, parameters.ReceiverCI) &&
                 await IsRequestor(parameters.NeedId, userCI))
             {
-                await _needRepository.ChangeStatusAsync(parameters.NeedId, "Completed");
+                await _needRepository.ChangeStatusAsync(parameters.NeedId, "Finished");
 
                 return await _ratingRepository.InsertRatingAsync(userCI, parameters);
             }
